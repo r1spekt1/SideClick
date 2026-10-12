@@ -13,6 +13,7 @@ final class AppModel: ObservableObject {
     @Published private(set) var isAccessibilityGranted = Permissions.isAccessibilityGranted
     @Published private(set) var pressedButtons: Set<SideButton> = []
     @Published private(set) var isMouseConnected = false
+    @Published private(set) var conflicts: [String] = []
 
     private let store: SettingsStore
     private let buttons = ButtonController()
@@ -22,6 +23,7 @@ final class AppModel: ObservableObject {
     private var observers: [NSObjectProtocol] = []
     private var terminateSource: DispatchSourceSignal?
     private var permissionTimer: Timer?
+    private var conflictTimer: Timer?
 
     init(store: SettingsStore = SettingsStore()) {
         self.store = store
@@ -64,6 +66,10 @@ final class AppModel: ObservableObject {
             pollForAccessibility()
         }
         applySettings()
+        refreshConflicts()
+        conflictTimer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { [weak self] _ in
+            MainActor.assumeIsolated { self?.refreshConflicts() }
+        }
     }
 
     func requestAccessibility() {
@@ -104,5 +110,10 @@ final class AppModel: ObservableObject {
         scroll.update(settings: settings.scroll)
         if !buttons.start() { log.error("Could not create the side-button event tap") }
         if !scroll.start() { log.error("Could not create the scroll event tap") }
+    }
+
+    private func refreshConflicts() {
+        let names = ConflictDetector.conflictingProcessNames()
+        if names != conflicts { conflicts = names }
     }
 }

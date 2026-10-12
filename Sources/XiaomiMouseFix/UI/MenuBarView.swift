@@ -8,6 +8,9 @@ struct MenuBarView: View {
             Text("XiaomiMouseFix").font(.headline)
             Text(model.isMouseConnected ? "Miš: povezan" : "Miš: nije povezan")
                 .font(.caption).foregroundStyle(.secondary)
+            if !model.conflicts.isEmpty {
+                Text("Konflikt: \(model.conflicts.joined(separator: ", "))").font(.caption).foregroundStyle(.orange)
+            }
             if model.isAccessibilityGranted {
                 Text("Accessibility: odobreno").font(.caption).foregroundStyle(.secondary)
             } else {
