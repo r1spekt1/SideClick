@@ -15,6 +15,7 @@ final class AppModel: ObservableObject {
 
     private let store: SettingsStore
     private let buttons = ButtonController()
+    private let scroll = ScrollController()
     private var permissionTimer: Timer?
 
     init(store: SettingsStore = SettingsStore()) {
@@ -60,9 +61,12 @@ final class AppModel: ObservableObject {
         guard isAccessibilityGranted else { return }
         guard settings.isEnabled else {
             buttons.stop()
+            scroll.stop()
             return
         }
         buttons.update(settings: settings)
+        scroll.update(settings: settings.scroll)
         if !buttons.start() { log.error("Could not create the side-button event tap") }
+        if !scroll.start() { log.error("Could not create the scroll event tap") }
     }
 }
