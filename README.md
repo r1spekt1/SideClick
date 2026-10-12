@@ -40,6 +40,8 @@ svakog build-a, napravi lokalni sertifikat:
 
 Bez sertifikata build je ad-hoc potpisan. Posle svakog build-a ukloni aplikaciju iz
 **System Settings → Privacy & Security → Accessibility** i ponovo je odobri.
+Pre uklanjanja iz Accessibility liste ugasi aplikaciju (Quit iz menija), inače njeni
+event tap-ovi mogu na trenutak zakočiti scroll i side dugmad.
 
 ## Dozvole
 

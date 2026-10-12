@@ -13,12 +13,16 @@ APP="$BUILD_ROOT/XiaomiMouseFix.app"
 swift build -c "$CONFIG" --product XiaomiMouseFix --scratch-path "$BUILD_ROOT/.build"
 BIN_DIR="$(swift build -c "$CONFIG" --show-bin-path --scratch-path "$BUILD_ROOT/.build")"
 
+# Quit a running copy first (SIGTERM, so it restores the pointer settings).
+pkill -x XiaomiMouseFix && sleep 1 || true
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS"
 cp "$BIN_DIR/XiaomiMouseFix" "$APP/Contents/MacOS/XiaomiMouseFix"
 cp Resources/Info.plist "$APP/Contents/Info.plist"
 
-if security find-identity -p codesigning | grep -q "\"$IDENTITY\""; then
+# Captured first: under pipefail an early-exiting grep -q could SIGPIPE security.
+IDENTITIES="$(security find-identity -p codesigning)"
+if grep -qF "\"$IDENTITY\"" <<<"$IDENTITIES"; then
     codesign --force --sign "$IDENTITY" "$APP"
 else
     echo "warning: signing identity '$IDENTITY' not found; using ad-hoc signature." >&2

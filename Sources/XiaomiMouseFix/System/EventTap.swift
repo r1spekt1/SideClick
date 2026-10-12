@@ -1,3 +1,4 @@
+import ApplicationServices
 import CoreGraphics
 import Foundation
 
@@ -9,12 +10,16 @@ final class EventTap {
     private let location: CGEventTapLocation
     private let mask: CGEventMask
     private let handler: Handler
+    /// Called when the system disables the tap; events may have been missed meanwhile.
+    private let onDisabled: (() -> Void)?
     private var port: CFMachPort?
     private var source: CFRunLoopSource?
 
-    init(location: CGEventTapLocation = .cghidEventTap, events: [CGEventType], handler: @escaping Handler) {
+    init(location: CGEventTapLocation = .cghidEventTap, events: [CGEventType],
+         onDisabled: (() -> Void)? = nil, handler: @escaping Handler) {
         self.location = location
         self.mask = events.reduce(CGEventMask(0)) { $0 | (CGEventMask(1) << $1.rawValue) }
+        self.onDisabled = onDisabled
         self.handler = handler
     }
 
@@ -46,7 +51,9 @@ final class EventTap {
 
     fileprivate func handle(_ type: CGEventType, _ event: CGEvent) -> Unmanaged<CGEvent>? {
         if type == .tapDisabledByTimeout || type == .tapDisabledByUserInput {
-            if let port { CGEvent.tapEnable(tap: port, enable: true) }
+            onDisabled?()
+            // Without Accessibility a re-enabled HID tap can stall input; AppModel stops it instead.
+            if let port, AXIsProcessTrusted() { CGEvent.tapEnable(tap: port, enable: true) }
             return Unmanaged.passUnretained(event)
         }
         return handler(type, event).map { Unmanaged.passUnretained($0) }

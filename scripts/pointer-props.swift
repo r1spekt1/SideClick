@@ -6,7 +6,8 @@ import IOKit.hidsystem
 let client = IOHIDEventSystemClientCreateSimpleClient(kCFAllocatorDefault)
 let services = IOHIDEventSystemClientCopyServices(client) as? [IOHIDServiceClient] ?? []
 for service in services where (IOHIDServiceClientCopyProperty(service, "VendorID" as CFString) as? Int) == 0x2717 {
-    for key in ["Product", "PrimaryUsage", "HIDMouseAcceleration", "HIDPointerResolution"] {
+    for key in ["Product", "PrimaryUsage", "HIDMouseAcceleration", "HIDPointerResolution",
+                "HIDUseLinearScalingMouseAcceleration"] {
         print(key, "=", IOHIDServiceClientCopyProperty(service, key as CFString).map { "\($0)" } ?? "nil")
     }
     print("---")

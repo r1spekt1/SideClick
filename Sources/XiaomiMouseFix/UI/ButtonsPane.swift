@@ -27,6 +27,8 @@ struct ButtonsPane: View {
                     GestureActionRow(gesture: gesture, action: binding(for: gesture))
                 }
             }
+            // New rows per button, so an armed shortcut recorder cannot record into another button.
+            .id(selected)
             Section("Vreme") {
                 LabeledContent("Prozor za više klikova") {
                     HStack {

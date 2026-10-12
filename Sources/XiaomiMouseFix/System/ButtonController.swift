@@ -12,7 +12,14 @@ final class ButtonController {
     private var recognizer = GestureRecognizer()
     private var mappings: [SideButton: ButtonMapping] = [:]
     private var timer: Timer?
-    private lazy var tap = EventTap(events: [.otherMouseDown, .otherMouseUp, .otherMouseDragged]) { [weak self] type, event in
+    /// Buttons currently down, as reported through onButtonActivity.
+    private var heldButtons: Set<SideButton> = []
+    /// Mapped buttons whose down we swallowed; only their up/drag is swallowed or rewritten.
+    private var swallowedDown: Set<SideButton> = []
+    private lazy var tap = EventTap(events: [.otherMouseDown, .otherMouseUp, .otherMouseDragged],
+                                    onDisabled: { [weak self] in
+        MainActor.assumeIsolated { self?.resetPressState() }
+    }) { [weak self] type, event in
         MainActor.assumeIsolated {
             // nil from handle() means "swallow", so it must not fall back to `event`.
             guard let self else { return event }
@@ -24,15 +31,22 @@ final class ButtonController {
         mappings = [.back: settings.backButton, .forward: settings.forwardButton]
         recognizer.timing = settings.timing
         recognizer.mappedGestures = mappings.mapValues(\.mappedGestures)
-        recognizer.reset()
-        rescheduleTimer()
+        resetPressState()
     }
 
     func start() -> Bool { tap.start() }
 
     func stop() {
         tap.stop()
+        resetPressState()
+    }
+
+    /// Forgets presses in flight (their up may never reach us) and reports held buttons released.
+    private func resetPressState() {
         recognizer.reset()
+        swallowedDown.removeAll()
+        for button in heldButtons { onButtonActivity?(button, false) }
+        heldButtons.removeAll()
         rescheduleTimer()
     }
 
@@ -41,17 +55,27 @@ final class ButtonController {
               let button = SideButton(cgButtonNumber: event.getIntegerValueField(.mouseEventButtonNumber))
         else { return event }
 
-        if type == .otherMouseDown { onButtonActivity?(button, true) }
-        if type == .otherMouseUp { onButtonActivity?(button, false) }
+        if type == .otherMouseDown {
+            heldButtons.insert(button)
+            onButtonActivity?(button, true)
+        }
+        if type == .otherMouseUp {
+            heldButtons.remove(button)
+            onButtonActivity?(button, false)
+        }
         guard let mapping = mappings[button], !mapping.mappedGestures.isEmpty else { return event }
 
         let now = ProcessInfo.processInfo.systemUptime
         switch type {
         case .otherMouseDown:
+            swallowedDown.insert(button)
             perform(recognizer.buttonDown(button, at: now))
         case .otherMouseUp:
+            // An up whose down was not swallowed belongs to the app, which saw that down.
+            guard swallowedDown.remove(button) != nil else { return event }
             perform(recognizer.buttonUp(button, at: now))
         default:
+            guard swallowedDown.contains(button) else { return event }
             // Moving while a mapped button is held: keep the cursor moving.
             event.type = .mouseMoved
             return event

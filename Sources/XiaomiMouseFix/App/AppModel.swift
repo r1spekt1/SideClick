@@ -21,7 +21,7 @@ final class AppModel: ObservableObject {
     private let device = DeviceMonitor()
     private let pointer = PointerController()
     private var observers: [NSObjectProtocol] = []
-    private var terminateSource: DispatchSourceSignal?
+    private var terminateSources: [DispatchSourceSignal] = []
     private var permissionTimer: Timer?
     private var conflictTimer: Timer?
 
@@ -51,20 +51,20 @@ final class AppModel: ObservableObject {
             forName: NSApplication.willTerminateNotification, object: nil, queue: .main) { [weak self] _ in
             MainActor.assumeIsolated { self?.pointer.restore() }
         })
-        // SIGTERM (e.g. pkill) skips willTerminate; route it through a normal terminate.
-        signal(SIGTERM, SIG_IGN)
-        let source = DispatchSource.makeSignalSource(signal: SIGTERM, queue: .main)
-        source.setEventHandler { NSApp.terminate(nil) }
-        source.resume()
-        terminateSource = source
+        // SIGTERM (e.g. pkill) and SIGINT (Ctrl-C) skip willTerminate; route them through a normal terminate.
+        for signalNumber in [SIGTERM, SIGINT] {
+            signal(signalNumber, SIG_IGN)
+            let source = DispatchSource.makeSignalSource(signal: signalNumber, queue: .main)
+            source.setEventHandler { NSApp.terminate(nil) }
+            source.resume()
+            terminateSources.append(source)
+        }
         observers.append(NSWorkspace.shared.notificationCenter.addObserver(
             forName: NSWorkspace.didWakeNotification, object: nil, queue: .main) { [weak self] _ in
             MainActor.assumeIsolated { self?.applySettings() }
         })
-        if !isAccessibilityGranted {
-            Permissions.requestAccessibility()
-            pollForAccessibility()
-        }
+        if !isAccessibilityGranted { Permissions.requestAccessibility() }
+        watchAccessibility()
         applySettings()
         refreshConflicts()
         conflictTimer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { [weak self] _ in
@@ -77,14 +77,24 @@ final class AppModel: ObservableObject {
         Permissions.openAccessibilitySettings()
     }
 
-    private func pollForAccessibility() {
-        permissionTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] timer in
-            MainActor.assumeIsolated {
-                guard let self, Permissions.isAccessibilityGranted else { return }
-                timer.invalidate()
-                self.isAccessibilityGranted = true
-                self.applySettings()
-            }
+    /// Keeps polling for the whole run: a revoked permission must stop the HID taps,
+    /// which could otherwise stall scrolling and the side buttons.
+    private func watchAccessibility() {
+        permissionTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
+            MainActor.assumeIsolated { self?.accessibilityMayHaveChanged() }
+        }
+    }
+
+    private func accessibilityMayHaveChanged() {
+        let granted = Permissions.isAccessibilityGranted
+        guard granted != isAccessibilityGranted else { return }
+        isAccessibilityGranted = granted
+        if granted {
+            applySettings()
+        } else {
+            log.error("Accessibility permission was revoked; stopping the event taps")
+            buttons.stop()
+            scroll.stop()
         }
     }
 
