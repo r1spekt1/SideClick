@@ -3,3 +3,6 @@
 build/
 *.xcuserstate
 xcuserdata/
+
+# Local-only specs and implementation plans (name them YYYY-MM-DD-<topic>-vN.md)
+docs/superpowers/

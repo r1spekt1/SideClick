@@ -1,22 +1,41 @@
 # XiaomiMouseFix
 
-macOS menu bar aplikacija za Xiaomi Silent Mouse 2: programabilna side dugmad
-(single / double / triple click i long press), brzina i akceleracija pointera,
-smooth scroll, invert i Shift za horizontalni scroll.
+A macOS menu bar app for the Xiaomi Silent Mouse 2: programmable side buttons
+(single / double / triple click and long press), pointer speed and acceleration,
+smooth scroll, scroll invert, and Shift for horizontal scroll.
 
-## Zašto
+## Why
 
-Miš je standardan: side dugmad su mouse dugmad 4 i 5. Neke aplikacije, npr. Vorssaint,
-drže event tap koji guta ta dugmad, pa ih ostali softveri ne vide (`docs/spike/`).
-Isključi mouse funkcije u takvim aplikacijama. XiaomiMouseFix na to upozorava.
+The mouse is a standard one: the side buttons are mouse buttons 4 and 5. Some apps, for
+example Vorssaint, install an event tap that swallows those buttons, so other software never
+sees them (see `docs/spike/`). Turn off the mouse features in such apps. XiaomiMouseFix warns
+you when it detects this.
 
-## Build
+## Install
+
+Download the latest zip from [Releases](https://github.com/r1spekt1/XiaomiMouseFix/releases),
+unzip it, and move `XiaomiMouseFix.app` to `~/Applications`.
+
+Requires macOS 14+ and Apple Silicon. The only permission needed is **Accessibility**; the app
+asks for it on first launch.
+
+> The current release is ad-hoc signed and not notarized, so Gatekeeper blocks it on first
+> launch. Remove the quarantine flag once, or right-click the app and choose **Open**:
+>
+> ```bash
+> xattr -dr com.apple.quarantine ~/Applications/XiaomiMouseFix.app
+> ```
+>
+> Because the signature is ad-hoc, macOS also asks you to re-grant Accessibility after you
+> replace the app with a newer version.
+
+## Build from source
 
 ```bash
 scripts/build-app.sh
 ```
 
-Instalacija u `~/Applications` (stabilna putanja za Accessibility i „Pokreni pri prijavi"):
+Install into `~/Applications` (a stable path for Accessibility and "Launch at login"):
 
 ```bash
 pkill -x XiaomiMouseFix; ditto ~/Library/Caches/XiaomiMouseFix/XiaomiMouseFix.app ~/Applications/XiaomiMouseFix.app
@@ -26,33 +45,33 @@ pkill -x XiaomiMouseFix; ditto ~/Library/Caches/XiaomiMouseFix/XiaomiMouseFix.ap
 open ~/Applications/XiaomiMouseFix.app
 ```
 
-Build se pravi van repoa (u `~/Library/Caches/XiaomiMouseFix`) jer je `~/Documents`
-sinhronizovan preko iCloud-a, a iCloud xattr-ovi lome `codesign`.
+The build is created outside the repo (in `~/Library/Caches/XiaomiMouseFix`) because
+`~/Documents` can be synced by iCloud, and iCloud's extended attributes break `codesign`.
 
-Testovi:
+Run the tests:
 
 ```bash
 DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --scratch-path ~/Library/Caches/XiaomiMouseFix/.build
 ```
 
-## Potpisivanje (jednom)
+## Signing (one time)
 
-macOS vezuje Accessibility dozvolu za potpis aplikacije. Da dozvola ne bi nestajala posle
-svakog build-a, napravi lokalni sertifikat:
+macOS ties the Accessibility permission to the app's signature. To stop the permission from
+disappearing after every build, create a local certificate:
 
-1. Otvori **Keychain Access → Certificate Assistant → Create a Certificate…**
+1. Open **Keychain Access → Certificate Assistant → Create a Certificate…**
 2. Name: `XiaomiMouseFix Dev`, Identity Type: **Self-Signed Root**, Certificate Type: **Code Signing**.
-3. Klikni **Create**. `scripts/build-app.sh` će ga sam koristiti.
+3. Click **Create**. `scripts/build-app.sh` picks it up automatically.
 
-Bez sertifikata build je ad-hoc potpisan. Posle svakog build-a ukloni aplikaciju iz
-**System Settings → Privacy & Security → Accessibility** i ponovo je odobri.
-Pre uklanjanja iz Accessibility liste ugasi aplikaciju (Quit iz menija), inače njeni
-event tap-ovi mogu na trenutak zakočiti scroll i side dugmad.
+Without the certificate the build is ad-hoc signed. After each build, remove the app from
+**System Settings → Privacy & Security → Accessibility** and approve it again. Quit the app
+(from its menu) before removing it from the Accessibility list, otherwise its event taps can
+briefly stall scrolling and the side buttons.
 
-## Ikonice
+## Icons
 
-SVG izvori su u `Resources/Icon/`. Posle izmene SVG-a ponovo napravi PNG-ove, `AppIcon.icns` i
-menu bar sliku, pa build:
+The SVG sources are in `Resources/Icon/`. After editing an SVG, regenerate the PNGs,
+`AppIcon.icns` and the menu bar image, then build:
 
 ```bash
 scripts/render-icons.sh
@@ -60,17 +79,15 @@ scripts/render-icons.sh
 
 ## Design system
 
-Izvor je [docs/design-system/](docs/design-system/): brand book (`README.md`), tokeni
-(`tokens.json`) i uputstva i preview-i komponenti (`components/`). Objavljena kopija za
-pregled i za Claude Design: https://claude.ai/artifact/4AvfneNY7Ar6eZWWc4439t (privatna
-dok se ne podeli).
+The source of truth is [docs/design-system/](docs/design-system/): the brand book
+(`README.md`), tokens (`tokens.json`), and per-component guidance and previews (`components/`).
 
-- U Swift kodu koristi semantičke SwiftUI stilove (`.secondary`, `Color.accentColor`…), nikad
-  hex vrednosti iz `tokens.json`; one služe za dokumentaciju i mock-upove.
-- Kad menjaš izgled aplikacije, prvo ažuriraj `docs/design-system/`, pa ponovo objavi artifact.
-- Preview-i (`components/*/preview.html`) koriste CSS promenljive koje artifact generiše iz
-  `tokens.json`, pa se pravilno prikazuju samo u artifactu.
+- In Swift code, use semantic SwiftUI styles (`.secondary`, `Color.accentColor`, …), never the
+  hex values from `tokens.json`; those exist for documentation and mock-ups.
+- When you change the app's look, update `docs/design-system/` first.
+- The previews (`components/*/preview.html`) use CSS variables generated from `tokens.json`,
+  so they only render correctly when published as an artifact.
 
-## Dozvole
+## License
 
-Potrebna je samo **Accessibility**. Aplikacija je traži pri prvom pokretanju.
+[MIT](LICENSE)
