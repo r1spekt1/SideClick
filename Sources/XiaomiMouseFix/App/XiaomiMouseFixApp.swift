@@ -9,5 +9,10 @@ struct XiaomiMouseFixApp: App {
             MenuBarView(model: model)
         }
         .menuBarExtraStyle(.window)
+
+        Window("XiaomiMouseFix", id: "settings") {
+            SettingsView(model: model)
+        }
+        .windowResizability(.contentMinSize)
     }
 }
