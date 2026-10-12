@@ -11,17 +11,23 @@ final class AppModel: ObservableObject {
         didSet { settingsDidChange(from: oldValue) }
     }
     @Published private(set) var isAccessibilityGranted = Permissions.isAccessibilityGranted
+    @Published private(set) var pressedButtons: Set<SideButton> = []
 
     private let store: SettingsStore
+    private let buttons = ButtonController()
     private var permissionTimer: Timer?
 
     init(store: SettingsStore = SettingsStore()) {
         self.store = store
         settings = store.load()
+        buttons.onButtonActivity = { [weak self] button, isDown in
+            if isDown { self?.pressedButtons.insert(button) } else { self?.pressedButtons.remove(button) }
+        }
         if !isAccessibilityGranted {
             Permissions.requestAccessibility()
             pollForAccessibility()
         }
+        applySettings()
     }
 
     func requestAccessibility() {
@@ -35,6 +41,7 @@ final class AppModel: ObservableObject {
                 guard let self, Permissions.isAccessibilityGranted else { return }
                 timer.invalidate()
                 self.isAccessibilityGranted = true
+                self.applySettings()
             }
         }
     }
@@ -46,5 +53,16 @@ final class AppModel: ObservableObject {
         } catch {
             log.error("Saving settings failed: \(error.localizedDescription)")
         }
+        applySettings()
+    }
+
+    private func applySettings() {
+        guard isAccessibilityGranted else { return }
+        guard settings.isEnabled else {
+            buttons.stop()
+            return
+        }
+        buttons.update(settings: settings)
+        if !buttons.start() { log.error("Could not create the side-button event tap") }
     }
 }
