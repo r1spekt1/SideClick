@@ -49,6 +49,19 @@ Bez sertifikata build je ad-hoc potpisan. Posle svakog build-a ukloni aplikaciju
 Pre uklanjanja iz Accessibility liste ugasi aplikaciju (Quit iz menija), inače njeni
 event tap-ovi mogu na trenutak zakočiti scroll i side dugmad.
 
+## Design system
+
+Izvor je [docs/design-system/](docs/design-system/): brand book (`README.md`), tokeni
+(`tokens.json`) i uputstva i preview-i komponenti (`components/`). Objavljena kopija za
+pregled i za Claude Design: https://claude.ai/artifact/4AvfneNY7Ar6eZWWc4439t (privatna
+dok se ne podeli).
+
+- U Swift kodu koristi semantičke SwiftUI stilove (`.secondary`, `Color.accentColor`…), nikad
+  hex vrednosti iz `tokens.json`; one služe za dokumentaciju i mock-upove.
+- Kad menjaš izgled aplikacije, prvo ažuriraj `docs/design-system/`, pa ponovo objavi artifact.
+- Preview-i (`components/*/preview.html`) koriste CSS promenljive koje artifact generiše iz
+  `tokens.json`, pa se pravilno prikazuju samo u artifactu.
+
 ## Dozvole
 
 Potrebna je samo **Accessibility**. Aplikacija je traži pri prvom pokretanju.

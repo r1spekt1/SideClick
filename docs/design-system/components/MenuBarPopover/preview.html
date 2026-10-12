@@ -1,0 +1,38 @@
+<!-- @dsCard group="Shell" height=300 -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>MenuBarPopover — preview</title>
+<style>
+  body { margin:0; padding:var(--space-14); background:var(--window-background); font-family:var(--font-sans); }
+  .pop { width:var(--popover-width); box-sizing:border-box; padding:var(--space-14); background:var(--popover-background); border-radius:var(--radius-group); border:1px solid var(--separator); display:flex; flex-direction:column; gap:var(--space-10); color:var(--label); }
+  .head { display:flex; align-items:center; gap:6px; }
+  .head .grow { flex:1; }
+  .dot { width:var(--status-dot); height:var(--status-dot); border-radius:var(--radius-pill); background:var(--status-connected); }
+  .muted { color:var(--secondary-label); }
+  hr { border:0; border-top:1px solid var(--separator); margin:0; width:100%; }
+  .sw { display:flex; justify-content:space-between; align-items:center; }
+  .track { width:26px; height:15px; border-radius:var(--radius-pill); background:var(--side-button-idle); position:relative; }
+  .track::after { content:""; position:absolute; top:1.5px; left:1.5px; width:12px; height:12px; border-radius:var(--radius-pill); background:var(--on-accent); box-shadow:0 0.5px 1px var(--mouse-outline); }
+  .track.on { background:var(--accent); }
+  .track.on::after { left:12.5px; }
+  .item { color:var(--label); }
+  svg { width:16px; height:12px; }
+  .glyph { fill:var(--label); }
+</style></head>
+<body>
+  <div class="pop">
+    <div class="head">
+      <svg viewBox="0 0 16 12" aria-hidden="true"><rect class="glyph" x="4" y="0" width="8" height="12" rx="4"/></svg>
+      <span class="headline grow">Xiaomi Silent Mouse 2</span>
+      <span class="dot"></span><span class="caption muted">Povezan</span>
+    </div>
+    <hr>
+    <div class="sw body"><span>Uključeno</span><span class="track on"></span></div>
+    <div class="sw body"><span>Glatko skrolovanje</span><span class="track on"></span></div>
+    <div class="sw body"><span>Obrni skrolovanje</span><span class="track"></span></div>
+    <hr>
+    <span class="body item">Podešavanja…</span>
+    <span class="body item">Izađi</span>
+  </div>
+</body>
+</html>

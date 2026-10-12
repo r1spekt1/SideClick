@@ -1,0 +1,25 @@
+<!-- @dsCard group="Buttons pane" height=176 subtitle="Grouped Form section" -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>GestureActionRow — preview</title>
+<style>
+  body { margin:0; padding:var(--space-14); background:var(--window-background); font-family:var(--font-sans); }
+  h3 { margin:0 0 6px var(--space-8); color:var(--secondary-label); font-weight:600; }
+  .group { background:var(--control-background); border-radius:var(--radius-group); max-width:480px; }
+  .row { display:flex; align-items:center; justify-content:space-between; gap:var(--space-8); padding:7px 10px; color:var(--label); }
+  .row + .row { border-top:1px solid var(--separator); }
+  .ctl { display:flex; gap:6px; }
+  .pop, .push { font:inherit; color:var(--label); background:var(--control-background); border:1px solid var(--separator); border-radius:6px; padding:2px 8px; }
+  .pop::after { content:" ⌄"; color:var(--secondary-label); }
+  .mono { font-family:var(--font-mono); }
+</style></head>
+<body>
+  <h3 class="caption">Zadnje dugme</h3>
+  <div class="group">
+    <div class="row body"><span>Jedan klik</span><span class="ctl"><span class="pop">Prečica</span><span class="push mono">⌘C</span></span></div>
+    <div class="row body"><span>Dupli klik</span><span class="ctl"><span class="pop">Prečica</span><span class="push mono">⌘V</span></span></div>
+    <div class="row body"><span>Trostruki klik</span><span class="ctl"><span class="pop">Sistemska akcija</span><span class="pop">Mission Control</span></span></div>
+    <div class="row body"><span>Dugo držanje</span><span class="ctl"><span class="pop">Ništa</span></span></div>
+  </div>
+</body>
+</html>
