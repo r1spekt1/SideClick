@@ -23,7 +23,9 @@ cp Resources/AppIcon.icns Resources/MenuBarIcon.png Resources/MenuBarIcon@2x.png
 
 # Captured first: under pipefail an early-exiting grep -q could SIGPIPE security.
 IDENTITIES="$(security find-identity -p codesigning)"
-if grep -qF "\"$IDENTITY\"" <<<"$IDENTITIES"; then
+if [[ "$IDENTITY" == "-" ]]; then
+    codesign --force --sign - "$APP"
+elif grep -qF "\"$IDENTITY\"" <<<"$IDENTITIES"; then
     codesign --force --sign "$IDENTITY" "$APP"
 else
     echo "warning: signing identity '$IDENTITY' not found; using ad-hoc signature." >&2

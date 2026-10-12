@@ -13,18 +13,21 @@ you when it detects this.
 
 ## Install
 
-Download the latest zip from [Releases](https://github.com/r1spekt1/XiaomiMouseFix/releases),
-unzip it, and move `XiaomiMouseFix.app` to `~/Applications`.
+Download the latest `.dmg` from [Releases](https://github.com/r1spekt1/XiaomiMouseFix/releases),
+open it, and drag `XiaomiMouseFix.app` onto the `Applications` shortcut.
 
 Requires macOS 14+ and Apple Silicon. The only permission needed is **Accessibility**; the app
 asks for it on first launch.
 
-> The current release is ad-hoc signed and not notarized, so Gatekeeper blocks it on first
-> launch. Remove the quarantine flag once, or right-click the app and choose **Open**:
+> The app is ad-hoc signed and not notarized, so Gatekeeper blocks it on first launch. Either:
 >
-> ```bash
-> xattr -dr com.apple.quarantine ~/Applications/XiaomiMouseFix.app
-> ```
+> - open **System Settings → Privacy & Security** and click **Open Anyway** next to the
+>   XiaomiMouseFix message (macOS 15+; on macOS 14 right-click the app and choose **Open**), or
+> - remove the quarantine flag once:
+>
+>   ```bash
+>   xattr -dr com.apple.quarantine /Applications/XiaomiMouseFix.app
+>   ```
 >
 > Because the signature is ad-hoc, macOS also asks you to re-grant Accessibility after you
 > replace the app with a newer version.
@@ -43,6 +46,12 @@ pkill -x XiaomiMouseFix; ditto ~/Library/Caches/XiaomiMouseFix/XiaomiMouseFix.ap
 
 ```bash
 open ~/Applications/XiaomiMouseFix.app
+```
+
+To produce a drag-to-Applications DMG (ad-hoc signed) next to the app:
+
+```bash
+scripts/make-dmg.sh
 ```
 
 The build is created outside the repo (in `~/Library/Caches/XiaomiMouseFix`) because
