@@ -6,15 +6,10 @@ import MouseCore
 /// pixel scrolling. Trackpad (continuous) events pass through untouched.
 @MainActor
 final class ScrollController {
-    private enum Phase: Int64 {
-        case began = 1, changed = 2, ended = 4
-    }
-
     private var settings = ScrollSettings()
     private var animator = SmoothScrollAnimator(duration: ScrollSettings().smoothDuration)
     private var frameTimer: Timer?
     private var lastFrameTime: TimeInterval = 0
-    private var isGliding = false
     private lazy var tap = EventTap(events: [.scrollWheel]) { [weak self] _, event in
         MainActor.assumeIsolated {
             // nil from handle() means "swallow", so it must not fall back to `event`.
@@ -88,26 +83,23 @@ final class ScrollController {
         let pixels = animator.step(dt: now - lastFrameTime)
         lastFrameTime = now
         if pixels.vertical != 0 || pixels.horizontal != 0 {
-            postPixelScroll(vertical: pixels.vertical, horizontal: pixels.horizontal,
-                            phase: isGliding ? .changed : .began)
-            isGliding = true
+            postPixelScroll(vertical: pixels.vertical, horizontal: pixels.horizontal)
         }
         if animator.isIdle { stopGliding() }
     }
 
     private func stopGliding() {
-        if isGliding { postPixelScroll(vertical: 0, horizontal: 0, phase: .ended) }
-        isGliding = false
         animator.reset()
         frameTimer?.invalidate()
         frameTimer = nil
     }
 
-    private func postPixelScroll(vertical: Int32, horizontal: Int32, phase: Phase) {
+    /// Posts precise (continuous) pixel deltas without a gesture phase: a phase would make
+    /// AppKit treat the glide as a trackpad gesture and rubber-band past the content edges.
+    private func postPixelScroll(vertical: Int32, horizontal: Int32) {
         guard let event = CGEvent(scrollWheelEvent2Source: nil, units: .pixel, wheelCount: 2,
                                   wheel1: vertical, wheel2: horizontal, wheel3: 0) else { return }
         event.setIntegerValueField(.scrollWheelEventIsContinuous, value: 1)
-        event.setIntegerValueField(.scrollWheelEventScrollPhase, value: phase.rawValue)
         SyntheticEvent.post(event)
     }
 }
