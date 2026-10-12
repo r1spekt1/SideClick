@@ -28,10 +28,9 @@ enum SettingsPane: String, CaseIterable, Identifiable {
 
 struct SettingsView: View {
     @ObservedObject var model: AppModel
-    @State private var selection: SettingsPane? = .general
+    @State private var selection: SettingsPane? = .buttons
 
-    /// Panes that exist so far; Task 13 adds `.buttons`.
-    private let panes: [SettingsPane] = [.general, .pointer, .scroll, .about]
+    private let panes = SettingsPane.allCases
 
     var body: some View {
         NavigationSplitView {
@@ -52,7 +51,8 @@ struct SettingsView: View {
         case .general: GeneralPane(model: model)
         case .pointer: PointerPane(model: model)
         case .scroll: ScrollPane(model: model)
-        case .buttons, .about: AboutPane()
+        case .buttons: ButtonsPane(model: model)
+        case .about: AboutPane()
         }
     }
 }
