@@ -1,46 +1,41 @@
 #!/usr/bin/env bash
 # Renders Resources/Icon/*.svg into the PNGs, AppIcon.icns and the menu bar template image.
-# Quick Look renders the SVGs (filters and alpha included); sips downsizes from 1024.
+# scripts/render-svg.swift draws each size straight from the vector with WebKit, keeping
+# transparency (Quick Look thumbnails would flatten it onto white).
 set -euo pipefail
 cd "$(dirname "$0")/.."
+export DEVELOPER_DIR="${DEVELOPER_DIR:-/Applications/Xcode.app/Contents/Developer}"
 SRC="Resources/Icon"
 OUT="$SRC/png"
 WORK="$(mktemp -d)"
 trap 'rm -rf "$WORK"' EXIT
 
-render() { # <svg> <png out>: render one SVG at 1024 px
-    qlmanage -t -s 1024 -o "$WORK" "$1" >/dev/null 2>&1
-    mv "$WORK/$(basename "$1").png" "$2"
-}
-
-resize() { # <png in> <size> <png out>
-    sips -z "$2" "$2" "$1" --out "$3" >/dev/null
+swiftc -O scripts/render-svg.swift -o "$WORK/render-svg"
+render() { # <svg> <png out> <size>
+    "$WORK/render-svg" "$1" "$2" "$3"
 }
 
 mkdir -p "$OUT"
 for name in AppIcon AppIcon-Small AppIcon-Dark AppIcon-Clear AppIcon-Tinted AppIcon-Background AppIcon-Foreground; do
-    render "$SRC/$name.svg" "$OUT/$name-1024.png"
+    render "$SRC/$name.svg" "$OUT/$name-1024.png" 1024
 done
 
 # 16 and 32 px use the simplified drawing; 64 px and up use the detailed one.
 ICONSET="$WORK/AppIcon.iconset"
 mkdir -p "$ICONSET"
-resize "$OUT/AppIcon-Small-1024.png" 16 "$ICONSET/icon_16x16.png"
-resize "$OUT/AppIcon-Small-1024.png" 32 "$ICONSET/icon_16x16@2x.png"
-resize "$OUT/AppIcon-Small-1024.png" 32 "$ICONSET/icon_32x32.png"
-resize "$OUT/AppIcon-1024.png" 64 "$ICONSET/icon_32x32@2x.png"
+render "$SRC/AppIcon-Small.svg" "$ICONSET/icon_16x16.png" 16
+render "$SRC/AppIcon-Small.svg" "$ICONSET/icon_16x16@2x.png" 32
+render "$SRC/AppIcon-Small.svg" "$ICONSET/icon_32x32.png" 32
+render "$SRC/AppIcon.svg" "$ICONSET/icon_32x32@2x.png" 64
 for size in 128 256 512; do
-    resize "$OUT/AppIcon-1024.png" "$size" "$ICONSET/icon_${size}x${size}.png"
-    resize "$OUT/AppIcon-1024.png" $((size * 2)) "$ICONSET/icon_${size}x${size}@2x.png"
+    render "$SRC/AppIcon.svg" "$ICONSET/icon_${size}x${size}.png" "$size"
+    render "$SRC/AppIcon.svg" "$ICONSET/icon_${size}x${size}@2x.png" $((size * 2))
 done
 cp "$ICONSET"/icon_*.png "$OUT/"
 iconutil -c icns "$ICONSET" -o Resources/AppIcon.icns
 
 # Menu bar template image: NSBundle picks the @2x file on Retina screens.
-# Quick Look draws an SVG at its own width/height, so render a copy declared at 1024 px.
-sed 's/width="18" height="18"/width="1024" height="1024"/' "$SRC/MenuBarIcon.svg" > "$WORK/MenuBarIcon.svg"
-render "$WORK/MenuBarIcon.svg" "$WORK/MenuBarIcon-1024.png"
-resize "$WORK/MenuBarIcon-1024.png" 18 Resources/MenuBarIcon.png
-resize "$WORK/MenuBarIcon-1024.png" 36 Resources/MenuBarIcon@2x.png
+render "$SRC/MenuBarIcon.svg" Resources/MenuBarIcon.png 18
+render "$SRC/MenuBarIcon.svg" Resources/MenuBarIcon@2x.png 36
 
 echo "Rendered $OUT, Resources/AppIcon.icns and Resources/MenuBarIcon{,@2x}.png"
