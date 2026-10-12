@@ -1,0 +1,287 @@
+IOHIDRequestAccess(listen) = true
+IOHIDManagerOpen = 0x0 (0 = ok, 0xe00002e2 = no Input Monitoring permission)
+event tap = ok
+Listening... press side buttons.
+   0.093 device matched: Mi Wireless Mouse primaryPage=0x1 usage=0x2
+   0.096 TAP keyUp keycode=36 flags=0x100
+   4.092 HID report id=1 len=8: 01 10 02 00 00 00 00 00
+   4.092 HID value page=0x9 usage=0x5 value=1
+   4.092 TAP systemDefined subtype=7 key=0 state=0x10
+   4.098 HID report id=1 len=8: 01 10 02 00 00 00 00 00
+   4.160 HID report id=1 len=8: 01 10 ff ff 01 00 00 00
+   4.192 HID value page=0x9 usage=0x5 value=0
+   4.194 TAP otherMouseUp button=4
+   4.194 TAP systemDefined subtype=7 key=0 state=0x10
+   4.280 HID report id=1 len=8: 01 10 01 00 00 00 00 00
+   4.281 HID value page=0x9 usage=0x5 value=1
+   4.283 TAP otherMouseDown button=4
+   4.283 TAP systemDefined subtype=7 key=0 state=0x10
+   4.288 HID report id=1 len=8: 01 10 01 00 01 00 00 00
+   4.390 HID value page=0x9 usage=0x5 value=0
+   4.392 TAP otherMouseUp button=4
+   4.392 TAP systemDefined subtype=7 key=0 state=0x10
+   4.496 HID report id=1 len=8: 01 10 00 00 00 00 00 00
+   4.496 HID value page=0x9 usage=0x5 value=1
+   4.496 TAP otherMouseDown button=4
+   4.497 TAP systemDefined subtype=7 key=0 state=0x10
+   4.573 HID value page=0x9 usage=0x5 value=0
+   4.575 TAP otherMouseUp button=4
+   4.575 TAP systemDefined subtype=7 key=0 state=0x10
+   4.684 HID report id=1 len=8: 01 10 00 00 00 00 00 00
+   4.684 HID value page=0x9 usage=0x5 value=1
+   4.685 TAP otherMouseDown button=4
+   4.686 TAP systemDefined subtype=7 key=0 state=0x10
+   4.708 HID report id=1 len=8: 01 10 00 00 01 00 00 00
+   4.716 HID report id=1 len=8: 01 10 01 00 00 00 00 00
+   4.771 HID value page=0x9 usage=0x5 value=0
+   4.773 TAP otherMouseUp button=4
+   4.773 TAP systemDefined subtype=7 key=0 state=0x10
+   4.906 HID report id=1 len=8: 01 10 01 00 00 00 00 00
+   4.906 HID value page=0x9 usage=0x5 value=1
+   4.907 TAP otherMouseDown button=4
+   4.907 TAP systemDefined subtype=7 key=0 state=0x10
+   4.914 HID report id=1 len=8: 01 10 03 00 01 00 00 00
+   4.946 HID value page=0x9 usage=0x5 value=0
+   4.946 TAP otherMouseUp button=4
+   4.946 TAP systemDefined subtype=7 key=0 state=0x10
+   5.096 HID report id=1 len=8: 01 10 00 00 00 00 00 00
+   5.096 HID value page=0x9 usage=0x5 value=1
+   5.097 TAP otherMouseDown button=4
+   5.097 TAP systemDefined subtype=7 key=0 state=0x10
+   5.104 HID report id=1 len=8: 01 10 02 00 00 00 00 00
+   5.183 HID value page=0x9 usage=0x5 value=0
+   5.184 TAP otherMouseUp button=4
+   5.184 TAP systemDefined subtype=7 key=0 state=0x10
+   6.003 HID report id=1 len=8: 01 08 00 00 00 00 00 00
+   6.003 HID value page=0x9 usage=0x4 value=1
+   6.003 TAP otherMouseDown button=3
+   6.004 TAP systemDefined subtype=7 key=0 state=0x8
+   6.103 HID value page=0x9 usage=0x4 value=0
+   6.103 TAP otherMouseUp button=3
+   6.103 TAP systemDefined subtype=7 key=0 state=0x8
+   6.205 HID report id=1 len=8: 01 08 00 00 00 00 00 00
+   6.206 HID value page=0x9 usage=0x4 value=1
+   6.206 TAP otherMouseDown button=3
+   6.206 TAP systemDefined subtype=7 key=0 state=0x8
+   6.298 HID value page=0x9 usage=0x4 value=0
+   6.300 TAP otherMouseUp button=3
+   6.300 TAP systemDefined subtype=7 key=0 state=0x8
+   6.396 HID report id=1 len=8: 01 08 00 00 00 00 00 00
+   6.396 HID value page=0x9 usage=0x4 value=1
+   6.396 TAP otherMouseDown button=3
+   6.396 TAP systemDefined subtype=7 key=0 state=0x8
+   6.466 HID value page=0x9 usage=0x4 value=0
+   6.467 TAP otherMouseUp button=3
+   6.467 TAP systemDefined subtype=7 key=0 state=0x8
+   6.568 HID report id=1 len=8: 01 08 00 00 00 00 00 00
+   6.568 HID value page=0x9 usage=0x4 value=1
+   6.569 TAP otherMouseDown button=3
+   6.569 TAP systemDefined subtype=7 key=0 state=0x8
+   6.657 HID value page=0x9 usage=0x4 value=0
+   6.658 TAP otherMouseUp button=3
+   6.658 TAP systemDefined subtype=7 key=0 state=0x8
+   6.742 HID report id=1 len=8: 01 08 00 00 00 00 00 00
+   6.742 HID value page=0x9 usage=0x4 value=1
+   6.743 TAP otherMouseDown button=3
+   6.743 TAP systemDefined subtype=7 key=0 state=0x8
+   6.830 HID value page=0x9 usage=0x4 value=0
+   6.831 TAP otherMouseUp button=3
+   6.831 TAP systemDefined subtype=7 key=0 state=0x8
+   6.900 HID report id=1 len=8: 01 08 00 00 00 00 00 00
+   6.900 HID value page=0x9 usage=0x4 value=1
+   6.902 TAP otherMouseDown button=3
+   6.902 TAP systemDefined subtype=7 key=0 state=0x8
+   7.004 HID value page=0x9 usage=0x4 value=0
+   7.006 TAP otherMouseUp button=3
+   7.006 TAP systemDefined subtype=7 key=0 state=0x8
+   7.084 HID report id=1 len=8: 01 08 00 00 00 00 00 00
+   7.084 HID value page=0x9 usage=0x4 value=1
+   7.086 TAP otherMouseDown button=3
+   7.086 TAP systemDefined subtype=7 key=0 state=0x8
+   7.163 HID value page=0x9 usage=0x4 value=0
+   7.164 TAP otherMouseUp button=3
+   7.164 TAP systemDefined subtype=7 key=0 state=0x8
+   7.789 HID report id=1 len=8: 01 01 00 00 00 00 00 00
+   7.789 HID value page=0x9 usage=0x1 value=1
+   7.793 TAP systemDefined subtype=7 key=0 state=0x1
+   7.793 TAP type=1
+   7.796 HID report id=1 len=8: 01 01 01 00 02 00 00 00
+   7.860 HID value page=0x9 usage=0x1 value=0
+   7.861 TAP systemDefined subtype=7 key=0 state=0x1
+   8.027 HID report id=1 len=8: 01 01 00 00 00 00 00 00
+   8.027 HID value page=0x9 usage=0x1 value=1
+   8.033 TAP systemDefined subtype=7 key=0 state=0x1
+   8.033 TAP type=1
+   8.058 HID value page=0x9 usage=0x1 value=0
+   8.060 TAP systemDefined subtype=7 key=0 state=0x1
+   8.405 HID report id=1 len=8: 01 01 00 00 00 00 00 00
+   8.405 HID value page=0x9 usage=0x1 value=1
+   8.405 TAP systemDefined subtype=7 key=0 state=0x1
+   8.405 TAP type=1
+   8.478 HID value page=0x9 usage=0x1 value=0
+   8.478 TAP systemDefined subtype=7 key=0 state=0x1
+   8.597 HID report id=1 len=8: 01 01 00 00 00 00 00 00
+   8.597 HID value page=0x9 usage=0x1 value=1
+   8.601 TAP systemDefined subtype=7 key=0 state=0x1
+   8.601 TAP type=1
+   8.669 HID value page=0x9 usage=0x1 value=0
+   8.670 TAP systemDefined subtype=7 key=0 state=0x1
+   8.762 HID report id=1 len=8: 01 01 00 00 00 00 00 00
+   8.762 HID value page=0x9 usage=0x1 value=1
+   8.764 TAP systemDefined subtype=7 key=0 state=0x1
+   8.764 TAP type=1
+   8.834 HID value page=0x9 usage=0x1 value=0
+   8.835 TAP systemDefined subtype=7 key=0 state=0x1
+   8.928 HID report id=1 len=8: 01 01 00 00 00 00 00 00
+   8.929 HID value page=0x9 usage=0x1 value=1
+   8.930 TAP systemDefined subtype=7 key=0 state=0x1
+   8.930 TAP type=1
+   8.992 HID value page=0x9 usage=0x1 value=0
+   8.993 TAP systemDefined subtype=7 key=0 state=0x1
+   9.070 HID report id=1 len=8: 01 01 00 00 00 00 00 00
+   9.070 HID value page=0x9 usage=0x1 value=1
+   9.072 TAP systemDefined subtype=7 key=0 state=0x1
+   9.072 TAP type=1
+   9.150 HID value page=0x9 usage=0x1 value=0
+   9.152 TAP systemDefined subtype=7 key=0 state=0x1
+   9.230 HID report id=1 len=8: 01 01 00 00 00 00 00 00
+   9.230 HID value page=0x9 usage=0x1 value=1
+   9.233 TAP systemDefined subtype=7 key=0 state=0x1
+   9.233 TAP type=1
+   9.332 HID value page=0x9 usage=0x1 value=0
+   9.334 TAP systemDefined subtype=7 key=0 state=0x1
+   9.412 HID report id=1 len=8: 01 01 00 00 00 00 00 00
+   9.413 HID value page=0x9 usage=0x1 value=1
+   9.414 TAP systemDefined subtype=7 key=0 state=0x1
+   9.414 TAP type=1
+   9.507 HID value page=0x9 usage=0x1 value=0
+   9.508 TAP systemDefined subtype=7 key=0 state=0x1
+  10.069 HID report id=1 len=8: 01 02 00 00 00 00 00 00
+  10.069 HID value page=0x9 usage=0x2 value=1
+  10.069 TAP systemDefined subtype=7 key=0 state=0x2
+  10.070 TAP type=3
+  10.116 HID value page=0x9 usage=0x2 value=0
+  10.116 TAP systemDefined subtype=7 key=0 state=0x2
+  10.236 HID report id=1 len=8: 01 02 ff ff 01 00 00 00
+  10.236 HID value page=0x9 usage=0x2 value=1
+  10.236 TAP systemDefined subtype=7 key=0 state=0x2
+  10.236 TAP type=3
+  10.306 HID value page=0x9 usage=0x2 value=0
+  10.306 TAP systemDefined subtype=7 key=0 state=0x2
+  10.418 HID report id=1 len=8: 01 02 00 00 00 00 00 00
+  10.418 HID value page=0x9 usage=0x2 value=1
+  10.419 TAP systemDefined subtype=7 key=0 state=0x2
+  10.419 TAP type=3
+  10.512 HID value page=0x9 usage=0x2 value=0
+  10.516 TAP systemDefined subtype=7 key=0 state=0x2
+  10.972 HID report id=1 len=8: 01 02 00 00 00 00 00 00
+  10.972 HID value page=0x9 usage=0x2 value=1
+  10.974 TAP systemDefined subtype=7 key=0 state=0x2
+  10.975 TAP type=3
+  11.050 HID value page=0x9 usage=0x2 value=0
+  11.052 TAP systemDefined subtype=7 key=0 state=0x2
+  11.154 HID report id=1 len=8: 01 02 00 00 00 00 00 00
+  11.154 HID value page=0x9 usage=0x2 value=1
+  11.155 TAP systemDefined subtype=7 key=0 state=0x2
+  11.155 TAP type=3
+  11.234 HID value page=0x9 usage=0x2 value=0
+  11.235 TAP systemDefined subtype=7 key=0 state=0x2
+  11.344 HID report id=1 len=8: 01 02 00 00 00 00 00 00
+  11.345 HID value page=0x9 usage=0x2 value=1
+  11.346 TAP systemDefined subtype=7 key=0 state=0x2
+  11.346 TAP type=3
+  11.400 HID report id=1 len=8: 01 02 ff ff ff ff 00 00
+  11.408 HID report id=1 len=8: 01 02 ff ff 00 00 00 00
+  11.416 HID report id=1 len=8: 01 02 ff ff ff ff 00 00
+  11.432 HID value page=0x9 usage=0x2 value=0
+  11.433 TAP systemDefined subtype=7 key=0 state=0x2
+  11.528 HID report id=1 len=8: 01 02 00 00 00 00 00 00
+  11.528 HID value page=0x9 usage=0x2 value=1
+  11.528 TAP systemDefined subtype=7 key=0 state=0x2
+  11.528 TAP type=3
+  11.614 HID value page=0x9 usage=0x2 value=0
+  11.615 TAP systemDefined subtype=7 key=0 state=0x2
+  12.122 HID report id=1 len=8: 01 04 00 00 00 00 00 00
+  12.122 HID value page=0x9 usage=0x3 value=1
+  12.124 TAP otherMouseDown button=2
+  12.124 TAP systemDefined subtype=7 key=0 state=0x4
+  12.225 HID value page=0x9 usage=0x3 value=0
+  12.227 TAP otherMouseUp button=2
+  12.227 TAP systemDefined subtype=7 key=0 state=0x4
+  12.462 HID report id=1 len=8: 01 04 00 00 00 00 00 00
+  12.462 HID value page=0x9 usage=0x3 value=1
+  12.462 TAP otherMouseDown button=2
+  12.462 TAP systemDefined subtype=7 key=0 state=0x4
+  12.588 HID report id=1 len=8: 01 04 ff ff 01 00 00 00
+  12.604 HID value page=0x9 usage=0x3 value=0
+  12.605 TAP otherMouseUp button=2
+  12.605 TAP systemDefined subtype=7 key=0 state=0x4
+  12.706 HID report id=1 len=8: 01 04 00 00 00 00 00 00
+  12.706 HID value page=0x9 usage=0x3 value=1
+  12.707 TAP otherMouseDown button=2
+  12.708 TAP systemDefined subtype=7 key=0 state=0x4
+  12.722 HID report id=1 len=8: 01 04 00 00 01 00 00 00
+  12.746 HID report id=1 len=8: 01 04 ff ff 01 00 00 00
+  12.802 HID value page=0x9 usage=0x3 value=0
+  12.804 TAP otherMouseUp button=2
+  12.804 TAP systemDefined subtype=7 key=0 state=0x4
+  12.920 HID report id=1 len=8: 01 04 00 00 00 00 00 00
+  12.920 HID value page=0x9 usage=0x3 value=1
+  12.922 TAP otherMouseDown button=2
+  12.922 TAP systemDefined subtype=7 key=0 state=0x4
+  13.008 HID value page=0x9 usage=0x3 value=0
+  13.011 TAP otherMouseUp button=2
+  13.011 TAP systemDefined subtype=7 key=0 state=0x4
+  13.110 HID report id=1 len=8: 01 04 00 00 00 00 00 00
+  13.111 HID value page=0x9 usage=0x3 value=1
+  13.111 TAP otherMouseDown button=2
+  13.112 TAP systemDefined subtype=7 key=0 state=0x4
+  13.214 HID value page=0x9 usage=0x3 value=0
+  13.216 TAP otherMouseUp button=2
+  13.216 TAP systemDefined subtype=7 key=0 state=0x4
+  13.325 HID report id=1 len=8: 01 04 00 00 01 00 00 00
+  13.325 HID value page=0x9 usage=0x3 value=1
+  13.327 TAP otherMouseDown button=2
+  13.327 TAP systemDefined subtype=7 key=0 state=0x4
+  13.332 HID report id=1 len=8: 01 04 ff ff 01 00 00 00
+  13.340 HID report id=1 len=8: 01 04 ff ff 01 00 00 00
+  13.405 HID value page=0x9 usage=0x3 value=0
+  13.407 TAP otherMouseUp button=2
+  13.407 TAP systemDefined subtype=7 key=0 state=0x4
+  13.506 HID report id=1 len=8: 01 04 00 00 01 00 00 00
+  13.506 HID value page=0x9 usage=0x3 value=1
+  13.508 TAP otherMouseDown button=2
+  13.508 TAP systemDefined subtype=7 key=0 state=0x4
+  13.634 HID report id=1 len=8: 01 04 00 00 ff ff 00 00
+  13.640 HID value page=0x9 usage=0x3 value=0
+  13.641 TAP otherMouseUp button=2
+  13.641 TAP systemDefined subtype=7 key=0 state=0x4
+  13.752 HID value page=0x1 usage=0x38 value=1
+  16.002 HID report id=1 len=8: 01 01 00 00 00 00 00 00
+  16.002 HID value page=0x9 usage=0x1 value=1
+  16.006 TAP systemDefined subtype=7 key=0 state=0x1
+  16.006 TAP type=1
+  16.088 HID value page=0x9 usage=0x1 value=0
+  16.090 TAP systemDefined subtype=7 key=0 state=0x1
+  16.183 TAP type=12
+  16.270 TAP keyDown keycode=8 flags=0x80120
+  16.402 TAP keyUp keycode=8 flags=0x80120
+  16.466 TAP type=12
+  17.722 HID report id=1 len=8: 01 01 00 00 00 00 00 00
+  17.722 HID value page=0x9 usage=0x1 value=1
+  17.724 TAP systemDefined subtype=7 key=0 state=0x1
+  17.724 TAP type=1
+  17.814 HID value page=0x9 usage=0x1 value=0
+  17.814 TAP systemDefined subtype=7 key=0 state=0x1
+  18.556 HID report id=1 len=8: 01 01 00 00 00 00 00 00
+  18.556 HID value page=0x9 usage=0x1 value=1
+  18.557 TAP systemDefined subtype=7 key=0 state=0x1
+  18.557 TAP type=1
+  18.662 HID value page=0x9 usage=0x1 value=0
+  18.664 TAP systemDefined subtype=7 key=0 state=0x1
+  19.605 TAP type=12
+  19.713 TAP keyDown keycode=48 flags=0x100108
+  19.771 TAP type=12
+  19.791 TAP keyUp keycode=48 flags=0x100
+  20.316 TAP type=12
+  21.774 TAP keyDown keycode=8 flags=0x40101

@@ -1,0 +1,308 @@
+IOHIDRequestAccess(listen) = true
+IOHIDManagerOpen = 0x0 (0 = ok, 0xe00002e2 = no Input Monitoring permission)
+event tap = ok
+Listening... press side buttons.
+   0.095 device matched: Mi Wireless Mouse primaryPage=0x1 usage=0x2
+   2.684 HID report id=1 len=8: 01 10 01 00 00 00 00 00
+   2.684 HID value page=0x9 usage=0x5 value=1
+   2.696 TAP systemDefined subtype=7 key=0 state=0x10
+   2.698 HID report id=1 len=8: 01 10 03 00 ff ff 00 00
+   2.706 HID report id=1 len=8: 01 10 01 00 ff ff 00 00
+   2.712 HID report id=1 len=8: 01 10 00 00 ff ff 00 00
+   2.720 HID report id=1 len=8: 01 10 01 00 00 00 00 00
+   2.728 HID report id=1 len=8: 01 10 01 00 ff ff 00 00
+   2.832 HID value page=0x9 usage=0x5 value=0
+   2.833 TAP systemDefined subtype=7 key=0 state=0x10
+   3.959 HID report id=1 len=8: 01 08 00 00 00 00 00 00
+   3.959 HID value page=0x9 usage=0x4 value=1
+   3.960 TAP systemDefined subtype=7 key=0 state=0x8
+   4.098 HID report id=1 len=8: 01 08 00 00 ff ff 00 00
+   4.106 HID report id=1 len=8: 01 08 01 00 ff ff 00 00
+   4.122 HID value page=0x9 usage=0x4 value=0
+   4.123 TAP systemDefined subtype=7 key=0 state=0x8
+   7.578 HID report id=1 len=8: 01 10 00 00 00 00 00 00
+   7.578 HID value page=0x9 usage=0x5 value=1
+   7.585 TAP systemDefined subtype=7 key=0 state=0x10
+   7.608 HID report id=1 len=8: 01 10 00 00 ff ff 00 00
+   7.616 HID report id=1 len=8: 01 10 00 00 ff ff 00 00
+   7.624 HID report id=1 len=8: 01 10 00 00 ff ff 00 00
+   7.632 HID report id=1 len=8: 01 10 00 00 ff ff 00 00
+   8.836 HID value page=0x9 usage=0x5 value=0
+   8.848 TAP systemDefined subtype=7 key=0 state=0x10
+   9.723 HID report id=1 len=8: 01 08 00 00 00 00 00 00
+   9.724 HID value page=0x9 usage=0x4 value=1
+   9.725 TAP systemDefined subtype=7 key=0 state=0x8
+  11.126 HID value page=0x9 usage=0x4 value=0
+  11.126 TAP systemDefined subtype=7 key=0 state=0x8
+  11.840 HID report id=1 len=8: 01 01 00 00 00 00 00 00
+  11.840 HID value page=0x9 usage=0x1 value=1
+  11.841 TAP systemDefined subtype=7 key=0 state=0x1
+  11.841 TAP type=1
+  12.278 HID value page=0x9 usage=0x1 value=0
+  12.279 TAP systemDefined subtype=7 key=0 state=0x1
+  13.898 TAP type=12
+  14.056 TAP keyDown keycode=48 flags=0x100108
+  14.157 TAP type=12
+  14.196 TAP keyUp keycode=48 flags=0x100
+  16.552 HID value page=0x1 usage=0x38 value=1
+  16.612 HID value page=0x1 usage=0x38 value=1
+  16.692 HID value page=0x1 usage=0x38 value=1
+  16.802 HID value page=0x1 usage=0x38 value=1
+  17.428 HID value page=0x1 usage=0x38 value=-1
+  17.595 HID value page=0x1 usage=0x38 value=-1
+  17.832 HID value page=0x1 usage=0x38 value=-1
+  18.341 HID value page=0x1 usage=0x38 value=-1
+  18.371 HID value page=0x1 usage=0x38 value=-1
+  18.434 HID value page=0x1 usage=0x38 value=-1
+  18.855 HID value page=0x1 usage=0x38 value=1
+  18.918 HID value page=0x1 usage=0x38 value=1
+  18.996 HID value page=0x1 usage=0x38 value=1
+  19.210 HID value page=0x1 usage=0x38 value=-1
+  19.229 HID value page=0x1 usage=0x38 value=-1
+  19.250 HID value page=0x1 usage=0x38 value=-1
+  19.274 HID value page=0x1 usage=0x38 value=-1
+  19.298 HID value page=0x1 usage=0x38 value=-1
+  19.322 HID value page=0x1 usage=0x38 value=-1
+  19.377 HID value page=0x1 usage=0x38 value=-1
+  20.028 HID value page=0x1 usage=0x38 value=1
+  20.439 HID value page=0x1 usage=0x38 value=1
+  20.494 HID value page=0x1 usage=0x38 value=1
+  20.654 HID value page=0x1 usage=0x38 value=-1
+  20.685 HID value page=0x1 usage=0x38 value=-1
+  20.708 HID value page=0x1 usage=0x38 value=-1
+  20.730 HID value page=0x1 usage=0x38 value=-1
+  20.770 HID value page=0x1 usage=0x38 value=-1
+  21.303 HID value page=0x1 usage=0x38 value=1
+  21.328 HID value page=0x1 usage=0x38 value=1
+  21.348 HID value page=0x1 usage=0x38 value=1
+  21.380 HID value page=0x1 usage=0x38 value=1
+  21.404 HID value page=0x1 usage=0x38 value=1
+  21.468 HID value page=0x1 usage=0x38 value=1
+  21.754 HID value page=0x1 usage=0x38 value=-1
+  21.840 HID value page=0x1 usage=0x38 value=-1
+  21.926 HID value page=0x1 usage=0x38 value=-1
+  24.992 HID report id=1 len=8: 01 10 01 00 01 00 00 00
+  24.992 HID value page=0x9 usage=0x5 value=1
+  24.994 TAP systemDefined subtype=7 key=0 state=0x10
+  25.000 HID report id=1 len=8: 01 10 01 00 01 00 00 00
+  25.110 HID report id=1 len=8: 01 10 00 00 01 00 00 00
+  25.118 HID report id=1 len=8: 01 10 ff ff 01 00 00 00
+  25.126 HID value page=0x9 usage=0x5 value=0
+  25.126 TAP systemDefined subtype=7 key=0 state=0x10
+  25.286 HID report id=1 len=8: 01 10 01 00 00 00 00 00
+  25.286 HID value page=0x9 usage=0x5 value=1
+  25.288 TAP systemDefined subtype=7 key=0 state=0x10
+  25.292 HID report id=1 len=8: 01 10 01 00 00 00 00 00
+  25.300 HID report id=1 len=8: 01 10 01 00 00 00 00 00
+  25.308 HID report id=1 len=8: 01 10 01 00 00 00 00 00
+  25.316 HID report id=1 len=8: 01 10 01 00 00 00 00 00
+  25.324 HID report id=1 len=8: 01 10 01 00 00 00 00 00
+  25.332 HID report id=1 len=8: 01 10 02 00 00 00 00 00
+  25.348 HID report id=1 len=8: 01 10 01 00 00 00 00 00
+  25.404 HID value page=0x9 usage=0x5 value=0
+  25.405 TAP systemDefined subtype=7 key=0 state=0x10
+  25.619 HID report id=1 len=8: 01 10 01 00 00 00 00 00
+  25.619 HID value page=0x9 usage=0x5 value=1
+  25.621 TAP systemDefined subtype=7 key=0 state=0x10
+  25.626 HID report id=1 len=8: 01 10 01 00 01 00 00 00
+  25.634 HID report id=1 len=8: 01 10 02 00 00 00 00 00
+  25.642 HID report id=1 len=8: 01 10 01 00 00 00 00 00
+  25.650 HID report id=1 len=8: 01 10 03 00 00 00 00 00
+  25.658 HID report id=1 len=8: 01 10 01 00 00 00 00 00
+  25.666 HID report id=1 len=8: 01 10 03 00 02 00 00 00
+  25.674 HID report id=1 len=8: 01 10 01 00 00 00 00 00
+  25.682 HID report id=1 len=8: 01 10 01 00 00 00 00 00
+  25.728 HID report id=1 len=8: 01 10 fd ff 02 00 00 00
+  25.736 HID report id=1 len=8: 01 10 ff ff 00 00 00 00
+  25.744 HID report id=1 len=8: 01 10 fd ff 01 00 00 00
+  25.752 HID value page=0x9 usage=0x5 value=0
+  25.753 TAP systemDefined subtype=7 key=0 state=0x10
+  25.841 HID report id=1 len=8: 01 10 00 00 00 00 00 00
+  25.841 HID value page=0x9 usage=0x5 value=1
+  25.842 TAP systemDefined subtype=7 key=0 state=0x10
+  25.872 HID report id=1 len=8: 01 10 00 00 01 00 00 00
+  25.974 HID value page=0x9 usage=0x5 value=0
+  25.975 TAP systemDefined subtype=7 key=0 state=0x10
+  26.120 HID value page=0x1 usage=0x38 value=-1
+  26.140 HID value page=0x1 usage=0x38 value=-1
+  26.157 HID value page=0x1 usage=0x38 value=-1
+  26.164 HID value page=0x1 usage=0x38 value=-1
+  26.180 HID value page=0x1 usage=0x38 value=-1
+  26.196 HID value page=0x1 usage=0x38 value=-1
+  26.228 HID value page=0x1 usage=0x38 value=-1
+  26.482 HID report id=1 len=8: 01 10 00 00 02 00 00 00
+  26.482 HID value page=0x9 usage=0x5 value=1
+  26.482 TAP systemDefined subtype=7 key=0 state=0x10
+  26.608 HID value page=0x9 usage=0x5 value=0
+  26.609 TAP systemDefined subtype=7 key=0 state=0x10
+  26.702 HID report id=1 len=8: 01 10 00 00 00 00 00 00
+  26.702 HID value page=0x9 usage=0x5 value=1
+  26.705 TAP systemDefined subtype=7 key=0 state=0x10
+  26.798 HID value page=0x9 usage=0x5 value=0
+  26.799 TAP systemDefined subtype=7 key=0 state=0x10
+  26.876 HID report id=1 len=8: 01 10 00 00 00 00 00 00
+  26.876 HID value page=0x9 usage=0x5 value=1
+  26.879 TAP systemDefined subtype=7 key=0 state=0x10
+  26.900 HID report id=1 len=8: 01 10 ff ff 00 00 00 00
+  26.908 HID report id=1 len=8: 01 10 01 00 00 00 00 00
+  26.916 HID report id=1 len=8: 01 10 01 00 ff ff 00 00
+  26.924 HID report id=1 len=8: 01 10 01 00 00 00 00 00
+  26.980 HID value page=0x9 usage=0x5 value=0
+  26.981 TAP systemDefined subtype=7 key=0 state=0x10
+  27.082 HID report id=1 len=8: 01 10 00 00 00 00 00 00
+  27.082 HID value page=0x9 usage=0x5 value=1
+  27.084 TAP systemDefined subtype=7 key=0 state=0x10
+  27.090 HID report id=1 len=8: 01 10 01 00 00 00 00 00
+  27.098 HID report id=1 len=8: 01 10 02 00 ff ff 00 00
+  27.106 HID report id=1 len=8: 01 10 01 00 00 00 00 00
+  27.114 HID report id=1 len=8: 01 10 01 00 00 00 00 00
+  27.122 HID report id=1 len=8: 01 10 01 00 00 00 00 00
+  27.170 HID value page=0x9 usage=0x5 value=0
+  27.171 TAP systemDefined subtype=7 key=0 state=0x10
+  27.266 HID report id=1 len=8: 01 10 01 00 00 00 00 00
+  27.266 HID value page=0x9 usage=0x5 value=1
+  27.268 TAP systemDefined subtype=7 key=0 state=0x10
+  27.272 HID report id=1 len=8: 01 10 01 00 00 00 00 00
+  27.290 HID report id=1 len=8: 01 10 02 00 00 00 00 00
+  27.344 HID value page=0x9 usage=0x5 value=0
+  27.346 TAP systemDefined subtype=7 key=0 state=0x10
+  27.456 HID report id=1 len=8: 01 10 01 00 ff ff 00 00
+  27.456 HID value page=0x9 usage=0x5 value=1
+  27.458 TAP systemDefined subtype=7 key=0 state=0x10
+  27.464 HID report id=1 len=8: 01 10 01 00 ff ff 00 00
+  27.470 HID report id=1 len=8: 01 10 01 00 00 00 00 00
+  27.478 HID report id=1 len=8: 01 10 01 00 00 00 00 00
+  27.486 HID report id=1 len=8: 01 10 03 00 00 00 00 00
+  27.494 HID report id=1 len=8: 01 10 01 00 00 00 00 00
+  27.534 HID value page=0x9 usage=0x5 value=0
+  27.541 TAP systemDefined subtype=7 key=0 state=0x10
+  27.790 HID report id=1 len=8: 01 08 00 00 00 00 00 00
+  27.790 HID value page=0x9 usage=0x4 value=1
+  27.792 TAP systemDefined subtype=7 key=0 state=0x8
+  27.906 HID value page=0x9 usage=0x4 value=0
+  27.907 TAP systemDefined subtype=7 key=0 state=0x8
+  28.002 HID report id=1 len=8: 01 08 00 00 00 00 00 00
+  28.002 HID value page=0x9 usage=0x4 value=1
+  28.005 TAP systemDefined subtype=7 key=0 state=0x8
+  28.088 HID value page=0x9 usage=0x4 value=0
+  28.089 TAP systemDefined subtype=7 key=0 state=0x8
+  28.193 HID report id=1 len=8: 01 08 00 00 00 00 00 00
+  28.193 HID value page=0x9 usage=0x4 value=1
+  28.196 TAP systemDefined subtype=7 key=0 state=0x8
+  28.278 HID value page=0x9 usage=0x4 value=0
+  28.279 TAP systemDefined subtype=7 key=0 state=0x8
+  28.375 HID report id=1 len=8: 01 08 00 00 00 00 00 00
+  28.376 HID value page=0x9 usage=0x4 value=1
+  28.377 TAP systemDefined subtype=7 key=0 state=0x8
+  28.452 HID value page=0x9 usage=0x4 value=0
+  28.453 TAP systemDefined subtype=7 key=0 state=0x8
+  28.516 HID report id=1 len=8: 01 08 00 00 00 00 00 00
+  28.516 HID value page=0x9 usage=0x4 value=1
+  28.519 TAP systemDefined subtype=7 key=0 state=0x8
+  28.747 HID value page=0x9 usage=0x4 value=0
+  28.748 TAP systemDefined subtype=7 key=0 state=0x8
+  28.835 HID report id=1 len=8: 01 08 00 00 00 00 00 00
+  28.836 HID value page=0x9 usage=0x4 value=1
+  28.837 TAP systemDefined subtype=7 key=0 state=0x8
+  28.928 HID value page=0x9 usage=0x4 value=0
+  28.929 TAP systemDefined subtype=7 key=0 state=0x8
+  29.000 HID report id=1 len=8: 01 08 00 00 00 00 00 00
+  29.000 HID value page=0x9 usage=0x4 value=1
+  29.002 TAP systemDefined subtype=7 key=0 state=0x8
+  29.158 HID value page=0x9 usage=0x4 value=0
+  29.160 TAP systemDefined subtype=7 key=0 state=0x8
+  29.190 HID report id=1 len=8: 01 08 00 00 00 00 00 00
+  29.190 HID value page=0x9 usage=0x4 value=1
+  29.192 TAP systemDefined subtype=7 key=0 state=0x8
+  29.276 HID value page=0x9 usage=0x4 value=0
+  29.278 TAP systemDefined subtype=7 key=0 state=0x8
+  29.390 HID report id=1 len=8: 01 08 00 00 00 00 00 00
+  29.390 HID value page=0x9 usage=0x4 value=1
+  29.391 TAP systemDefined subtype=7 key=0 state=0x8
+  29.498 HID value page=0x9 usage=0x4 value=0
+  29.499 TAP systemDefined subtype=7 key=0 state=0x8
+  29.578 HID report id=1 len=8: 01 08 00 00 00 00 00 00
+  29.578 HID value page=0x9 usage=0x4 value=1
+  29.581 TAP systemDefined subtype=7 key=0 state=0x8
+  29.656 HID value page=0x9 usage=0x4 value=0
+  29.657 TAP systemDefined subtype=7 key=0 state=0x8
+  29.768 HID report id=1 len=8: 01 08 00 00 00 00 00 00
+  29.768 HID value page=0x9 usage=0x4 value=1
+  29.771 TAP systemDefined subtype=7 key=0 state=0x8
+  29.838 HID value page=0x9 usage=0x4 value=0
+  29.840 TAP systemDefined subtype=7 key=0 state=0x8
+  29.934 HID report id=1 len=8: 01 08 00 00 00 00 00 00
+  29.934 HID value page=0x9 usage=0x4 value=1
+  29.937 TAP systemDefined subtype=7 key=0 state=0x8
+  30.014 HID value page=0x9 usage=0x4 value=0
+  30.015 TAP systemDefined subtype=7 key=0 state=0x8
+  30.116 HID report id=1 len=8: 01 08 00 00 00 00 00 00
+  30.116 HID value page=0x9 usage=0x4 value=1
+  30.119 TAP systemDefined subtype=7 key=0 state=0x8
+  30.188 HID value page=0x9 usage=0x4 value=0
+  30.189 TAP systemDefined subtype=7 key=0 state=0x8
+  30.282 HID report id=1 len=8: 01 08 00 00 00 00 00 00
+  30.282 HID value page=0x9 usage=0x4 value=1
+  30.284 TAP systemDefined subtype=7 key=0 state=0x8
+  30.362 HID value page=0x9 usage=0x4 value=0
+  30.363 TAP systemDefined subtype=7 key=0 state=0x8
+  30.456 HID report id=1 len=8: 01 08 00 00 00 00 00 00
+  30.456 HID value page=0x9 usage=0x4 value=1
+  30.459 TAP systemDefined subtype=7 key=0 state=0x8
+  30.504 HID value page=0x9 usage=0x4 value=0
+  30.505 TAP systemDefined subtype=7 key=0 state=0x8
+  30.743 HID report id=1 len=8: 01 08 00 00 00 00 00 00
+  30.743 HID value page=0x9 usage=0x4 value=1
+  30.745 TAP systemDefined subtype=7 key=0 state=0x8
+  30.844 HID value page=0x9 usage=0x4 value=0
+  30.846 TAP systemDefined subtype=7 key=0 state=0x8
+  30.900 HID report id=1 len=8: 01 08 00 00 00 00 00 00
+  30.900 HID value page=0x9 usage=0x4 value=1
+  30.903 TAP systemDefined subtype=7 key=0 state=0x8
+  31.012 HID value page=0x9 usage=0x4 value=0
+  31.013 TAP systemDefined subtype=7 key=0 state=0x8
+ 242.233 HID value page=0x1 usage=0x38 value=1
+ 242.264 HID value page=0x1 usage=0x38 value=1
+ 242.304 HID value page=0x1 usage=0x38 value=1
+ 242.336 HID value page=0x1 usage=0x38 value=1
+ 242.360 HID value page=0x1 usage=0x38 value=1
+ 242.636 HID value page=0x1 usage=0x38 value=1
+ 242.644 HID value page=0x1 usage=0x38 value=1
+ 242.660 HID value page=0x1 usage=0x38 value=1
+ 242.668 HID value page=0x1 usage=0x38 value=1
+ 242.676 HID value page=0x1 usage=0x38 value=1
+ 242.684 HID value page=0x1 usage=0x38 value=1
+ 242.700 HID value page=0x1 usage=0x38 value=1
+ 242.732 HID value page=0x1 usage=0x38 value=1
+ 243.216 HID value page=0x1 usage=0x38 value=-1
+ 243.259 HID value page=0x1 usage=0x38 value=-1
+ 243.366 HID value page=0x1 usage=0x38 value=-1
+ 249.901 HID report id=1 len=8: 01 01 00 00 00 00 00 00
+ 249.901 HID value page=0x9 usage=0x1 value=1
+ 249.901 TAP systemDefined subtype=7 key=0 state=0x1
+ 249.902 TAP type=1
+ 249.984 HID value page=0x9 usage=0x1 value=0
+ 249.987 TAP systemDefined subtype=7 key=0 state=0x1
+ 250.348 HID report id=1 len=8: 01 01 00 00 00 00 00 00
+ 250.348 HID value page=0x9 usage=0x1 value=1
+ 250.349 TAP systemDefined subtype=7 key=0 state=0x1
+ 250.349 TAP type=1
+ 250.428 HID report id=1 len=8: 01 01 00 00 01 00 00 00
+ 250.436 HID value page=0x9 usage=0x1 value=0
+ 250.436 TAP systemDefined subtype=7 key=0 state=0x1
+ 250.666 HID report id=1 len=8: 01 01 00 00 00 00 00 00
+ 250.666 HID value page=0x9 usage=0x1 value=1
+ 250.667 TAP systemDefined subtype=7 key=0 state=0x1
+ 250.667 TAP type=1
+ 250.744 HID value page=0x9 usage=0x1 value=0
+ 250.744 TAP systemDefined subtype=7 key=0 state=0x1
+ 251.328 TAP keyDown keycode=124 flags=0xa00100
+ 251.438 TAP keyUp keycode=124 flags=0xa00100
+ 253.341 TAP keyDown keycode=36 flags=0x100
+ 253.383 TAP keyUp keycode=36 flags=0x100
+ 253.484 TAP type=12
+ 253.616 TAP keyDown keycode=48 flags=0x100108
+ 253.733 TAP keyUp keycode=48 flags=0x100108
+ 253.794 TAP type=12
+ 255.626 TAP type=12
+ 256.426 TAP keyDown keycode=8 flags=0x40101
