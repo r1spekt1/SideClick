@@ -5,7 +5,12 @@ import MouseCore
 /// Performs a mapped action by posting synthetic input or launching system apps.
 enum ActionExecutor {
     private static let missionControl = URL(fileURLWithPath: "/System/Applications/Mission Control.app/Contents/MacOS/Mission Control")
-    private static let appsLauncher = URL(fileURLWithPath: "/System/Applications/Apps.app")
+    /// The launcher app is Apps.app on macOS 26+ and Launchpad.app before that.
+    private static var appsLauncher: URL {
+        let apps = URL(fileURLWithPath: "/System/Applications/Apps.app")
+        return FileManager.default.fileExists(atPath: apps.path)
+            ? apps : URL(fileURLWithPath: "/System/Applications/Launchpad.app")
+    }
 
     static func perform(_ action: ButtonAction) {
         switch action {
