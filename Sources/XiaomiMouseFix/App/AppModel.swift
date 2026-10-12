@@ -12,10 +12,14 @@ final class AppModel: ObservableObject {
     }
     @Published private(set) var isAccessibilityGranted = Permissions.isAccessibilityGranted
     @Published private(set) var pressedButtons: Set<SideButton> = []
+    @Published private(set) var isMouseConnected = false
 
     private let store: SettingsStore
     private let buttons = ButtonController()
     private let scroll = ScrollController()
+    private let device = DeviceMonitor()
+    private let pointer = PointerController()
+    private var observers: [NSObjectProtocol] = []
     private var permissionTimer: Timer?
 
     init(store: SettingsStore = SettingsStore()) {
@@ -24,6 +28,20 @@ final class AppModel: ObservableObject {
         buttons.onButtonActivity = { [weak self] button, isDown in
             if isDown { self?.pressedButtons.insert(button) } else { self?.pressedButtons.remove(button) }
         }
+        device.onChange = { [weak self] connected in
+            guard let self else { return }
+            self.isMouseConnected = connected
+            if connected { self.applySettings() } else { self.pointer.deviceDisconnected() }
+        }
+        device.start()
+        observers.append(NotificationCenter.default.addObserver(
+            forName: NSApplication.willTerminateNotification, object: nil, queue: .main) { [weak self] _ in
+            MainActor.assumeIsolated { self?.pointer.restore() }
+        })
+        observers.append(NSWorkspace.shared.notificationCenter.addObserver(
+            forName: NSWorkspace.didWakeNotification, object: nil, queue: .main) { [weak self] _ in
+            MainActor.assumeIsolated { self?.applySettings() }
+        })
         if !isAccessibilityGranted {
             Permissions.requestAccessibility()
             pollForAccessibility()
@@ -58,6 +76,7 @@ final class AppModel: ObservableObject {
     }
 
     private func applySettings() {
+        if settings.isEnabled { pointer.apply(settings.pointer) } else { pointer.restore() }
         guard isAccessibilityGranted else { return }
         guard settings.isEnabled else {
             buttons.stop()
