@@ -6,6 +6,7 @@ let package = Package(
     platforms: [.macOS(.v14)],
     targets: [
         .target(name: "MouseCore"),
+        .executableTarget(name: "XiaomiMouseFix", dependencies: ["MouseCore"]),
         .testTarget(name: "MouseCoreTests", dependencies: ["MouseCore"]),
     ],
     swiftLanguageModes: [.v5]
