@@ -1,0 +1,48 @@
+import MouseCore
+import SwiftUI
+
+struct GeneralPane: View {
+    @ObservedObject var model: AppModel
+    @State private var launchAtLogin = LaunchAtLogin.isEnabled
+    @State private var launchError: String?
+
+    var body: some View {
+        Form {
+            Section {
+                Toggle("Uključi XiaomiMouseFix", isOn: $model.settings.isEnabled)
+                Toggle("Pokreni pri prijavi", isOn: $launchAtLogin)
+                    .onChange(of: launchAtLogin) { _, enabled in
+                        // Reverting the toggle after a failure re-enters here; ignore that.
+                        guard enabled != LaunchAtLogin.isEnabled else { return }
+                        do {
+                            try LaunchAtLogin.set(enabled)
+                            launchError = nil
+                        } catch {
+                            launchError = error.localizedDescription
+                            launchAtLogin = LaunchAtLogin.isEnabled
+                        }
+                    }
+                if let launchError {
+                    Text(launchError).font(.caption).foregroundStyle(.red)
+                }
+            }
+            Section("Status") {
+                LabeledContent("Miš", value: model.isMouseConnected ? "Povezan" : "Nije povezan")
+                LabeledContent("Accessibility") {
+                    if model.isAccessibilityGranted {
+                        Text("Odobreno")
+                    } else {
+                        Button("Odobri…") { model.requestAccessibility() }
+                    }
+                }
+            }
+            if !model.conflicts.isEmpty {
+                Section { ConflictWarning(names: model.conflicts) }
+            }
+            Section {
+                Button("Vrati podrazumevana podešavanja", role: .destructive) { model.settings = AppSettings() }
+            }
+        }
+        .formStyle(.grouped)
+    }
+}
