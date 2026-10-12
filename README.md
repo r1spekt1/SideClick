@@ -16,8 +16,14 @@ Isključi mouse funkcije u takvim aplikacijama. XiaomiMouseFix na to upozorava.
 scripts/build-app.sh
 ```
 
+Instalacija u `~/Applications` (stabilna putanja za Accessibility i „Pokreni pri prijavi"):
+
 ```bash
-open ~/Library/Caches/XiaomiMouseFix/XiaomiMouseFix.app
+pkill -x XiaomiMouseFix; ditto ~/Library/Caches/XiaomiMouseFix/XiaomiMouseFix.app ~/Applications/XiaomiMouseFix.app
+```
+
+```bash
+open ~/Applications/XiaomiMouseFix.app
 ```
 
 Build se pravi van repoa (u `~/Library/Caches/XiaomiMouseFix`) jer je `~/Documents`
