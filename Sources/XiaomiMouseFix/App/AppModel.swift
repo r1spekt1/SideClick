@@ -20,6 +20,7 @@ final class AppModel: ObservableObject {
     private let device = DeviceMonitor()
     private let pointer = PointerController()
     private var observers: [NSObjectProtocol] = []
+    private var terminateSource: DispatchSourceSignal?
     private var permissionTimer: Timer?
 
     init(store: SettingsStore = SettingsStore()) {
@@ -31,13 +32,29 @@ final class AppModel: ObservableObject {
         device.onChange = { [weak self] connected in
             guard let self else { return }
             self.isMouseConnected = connected
-            if connected { self.applySettings() } else { self.pointer.deviceDisconnected() }
+            if connected {
+                self.applySettings()
+                // The HID service can appear shortly after the device, so retry.
+                for delay in [0.5, 2.0] {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
+                        MainActor.assumeIsolated { self?.applySettings() }
+                    }
+                }
+            } else {
+                self.pointer.deviceDisconnected()
+            }
         }
         device.start()
         observers.append(NotificationCenter.default.addObserver(
             forName: NSApplication.willTerminateNotification, object: nil, queue: .main) { [weak self] _ in
             MainActor.assumeIsolated { self?.pointer.restore() }
         })
+        // SIGTERM (e.g. pkill) skips willTerminate; route it through a normal terminate.
+        signal(SIGTERM, SIG_IGN)
+        let source = DispatchSource.makeSignalSource(signal: SIGTERM, queue: .main)
+        source.setEventHandler { NSApp.terminate(nil) }
+        source.resume()
+        terminateSource = source
         observers.append(NSWorkspace.shared.notificationCenter.addObserver(
             forName: NSWorkspace.didWakeNotification, object: nil, queue: .main) { [weak self] _ in
             MainActor.assumeIsolated { self?.applySettings() }
