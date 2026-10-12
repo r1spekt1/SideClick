@@ -39,8 +39,10 @@ final class ScrollController {
         guard !SyntheticEvent.isOurs(event),
               event.getIntegerValueField(.scrollWheelEventIsContinuous) == 0 else { return event }
         let shiftHeld = event.flags.contains(.maskShift)
+        // Synthetic pixel events carry no modifier flags, so modifier+wheel (e.g. zoom) must stay on the in-place path.
+        let hasPassThroughModifier = !event.flags.isDisjoint(with: [.maskCommand, .maskControl, .maskAlternate])
 
-        if settings.smoothEnabled {
+        if settings.smoothEnabled && !hasPassThroughModifier {
             let notches = ScrollDelta(vertical: Double(event.getIntegerValueField(.scrollWheelEventDeltaAxis1)),
                                       horizontal: Double(event.getIntegerValueField(.scrollWheelEventDeltaAxis2)))
             let lines = ScrollTransformer.transform(notches, settings: settings, shiftHeld: shiftHeld)
