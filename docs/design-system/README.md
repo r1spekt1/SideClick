@@ -57,16 +57,16 @@ Nema sopstvenih animacija. Promene stanja su trenutne ili koriste podrazumevane 
 
 ## Ikonografija
 
-- Koristi samo SF Symbols, u sistemskoj veličini i boji teksta.
-- Simboli u aplikaciji: `computermouse` (menu bar ikonica i sidebar „Dugmad"), `computermouse.fill` (zaglavlje popover-a, „O aplikaciji"), `gearshape` (Opšte), `cursorarrow.motionlines` (Pointer), `scroll` (Scroll), `info.circle` (O aplikaciji), `exclamationmark.triangle.fill` u `warning` boji (konflikt).
-- Menu bar ikonica je monohromni template simbol. Sistem joj sam menja boju za svetli i tamni menu bar.
+- U UI-ju koristi samo SF Symbols, u sistemskoj veličini i boji teksta.
+- Simboli u aplikaciji: `computermouse` (sidebar „Dugmad"), `computermouse.fill` (zaglavlje popover-a), `gearshape` (Opšte), `cursorarrow.motionlines` (Pointer), `scroll` (Scroll), `info.circle` (O aplikaciji), `exclamationmark.triangle.fill` u `warning` boji (konflikt).
+- Jedini izuzetak je menu bar ikonica: sopstveni monohromni template simbol (`Resources/MenuBarIcon.png` i `@2x`), crtež miša sa dva side dugmeta. Sistem mu sam menja boju za svetli i tamni menu bar.
 - Emoji se ne koriste.
 
 ## Ikonica aplikacije
 
-Aplikacija još nema sopstvenu app ikonicu. Do tada Finder prikazuje generičku ikonicu, a menu bar koristi `computermouse`. Smernice za buduću ikonicu:
-
-- macOS 26 squircle format, sa slojevima za Liquid Glass (Default, Dark, Clear i Tinted varijante).
-- Motiv je miš viđen odozgo, bez kabla, sa jednim istaknutim side dugmetom na levoj ivici u akcent plavoj (`accent`). Telo je mat svetlo sivo ili belo, na mirnoj, tamnijoj podlozi.
-- Bez teksta, bez Xiaomi logotipa i bez trademark oblika. Ime proizvođača se ne pojavljuje u ikonici.
-- Uz app ikonicu ide monohromni menu bar simbol istog obrisa, 16–18pt, kao template slika.
+- Izvori su SVG fajlovi u `Resources/Icon/`: `AppIcon.svg` (detaljna), `AppIcon-Small.svg` (16 i 32 px), varijante `-Dark`, `-Clear` i `-Tinted`, i slojevi `-Background` i `-Foreground` za Icon Composer. Menu bar simbol je `MenuBarIcon.svg` na mreži od 18 pt.
+- `scripts/render-icons.sh` iz njih pravi PNG-ove (`Resources/Icon/png/`), `Resources/AppIcon.icns` i menu bar slike. Posle izmene SVG-a pokreni ga ponovo; PNG i `icns` se nikad ne menjaju ručno.
+- Motiv: miš viđen odozgo, mat svetlo sivo telo na grafitnoj squircle podlozi, a zadnje side dugme svetli u `accent` plavoj, kao da je pritisnuto. To je jedina boja na ikonici.
+- Male veličine (16 i 32 px) koriste pojednostavljen crtež: krupniji miš i veća dugmad, bez točkića.
+- Bez teksta, bez Xiaomi logotipa i bez trademark oblika.
+- Panel „O aplikaciji" prikazuje app ikonicu na 96 px.

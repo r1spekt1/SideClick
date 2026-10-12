@@ -1,3 +1,4 @@
+import AppKit
 import SwiftUI
 
 struct AboutPane: View {
@@ -7,7 +8,10 @@ struct AboutPane: View {
 
     var body: some View {
         VStack(spacing: 12) {
-            Image(systemName: "computermouse.fill").font(.system(size: 48)).foregroundStyle(.tint)
+            Image(nsImage: NSApp.applicationIconImage)
+                .resizable()
+                .frame(width: 96, height: 96)
+                .accessibilityHidden(true)
             Text("XiaomiMouseFix").font(.title2.bold())
             Text("Verzija \(version)").foregroundStyle(.secondary)
             Text("Podešavanja za Xiaomi Silent Mouse 2: programabilna side dugmad, pointer i scroll.")

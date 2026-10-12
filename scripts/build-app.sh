@@ -16,9 +16,10 @@ BIN_DIR="$(swift build -c "$CONFIG" --show-bin-path --scratch-path "$BUILD_ROOT/
 # Quit a running copy first (SIGTERM, so it restores the pointer settings).
 pkill -x XiaomiMouseFix && sleep 1 || true
 rm -rf "$APP"
-mkdir -p "$APP/Contents/MacOS"
+mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp "$BIN_DIR/XiaomiMouseFix" "$APP/Contents/MacOS/XiaomiMouseFix"
 cp Resources/Info.plist "$APP/Contents/Info.plist"
+cp Resources/AppIcon.icns Resources/MenuBarIcon.png Resources/MenuBarIcon@2x.png "$APP/Contents/Resources/"
 
 # Captured first: under pipefail an early-exiting grep -q could SIGPIPE security.
 IDENTITIES="$(security find-identity -p codesigning)"

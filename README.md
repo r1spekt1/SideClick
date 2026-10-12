@@ -49,6 +49,15 @@ Bez sertifikata build je ad-hoc potpisan. Posle svakog build-a ukloni aplikaciju
 Pre uklanjanja iz Accessibility liste ugasi aplikaciju (Quit iz menija), inače njeni
 event tap-ovi mogu na trenutak zakočiti scroll i side dugmad.
 
+## Ikonice
+
+SVG izvori su u `Resources/Icon/`. Posle izmene SVG-a ponovo napravi PNG-ove, `AppIcon.icns` i
+menu bar sliku, pa build:
+
+```bash
+scripts/render-icons.sh
+```
+
 ## Design system
 
 Izvor je [docs/design-system/](docs/design-system/): brand book (`README.md`), tokeni
