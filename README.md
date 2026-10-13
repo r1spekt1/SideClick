@@ -50,7 +50,7 @@ Your settings are copied over automatically on first launch.
 
 Virtual HID pointing devices (for example from Karabiner-Elements or remote-desktop tools) can be listed as mice, and a mouse that exposes several mouse interfaces may be listed twice.
 
-On macOS 27, the system rejects changing the pointer resolution (observed on a Xiaomi Silent Mouse 2 with macOS 27.0.1), so the **Speed** slider on the Pointer pane has no effect there. The acceleration setting still works.
+The **Speed** slider on the Pointer pane works by changing the mouse's pointer resolution. The Xiaomi Silent Mouse 2 does not report a resolution and macOS rejects setting one on it (observed on macOS 27.0.1), so Speed has no effect on that mouse; use **Acceleration strength** instead, which changes the system tracking speed and does work. Whether other mice accept a resolution change is untested.
 
 ## Build from source
 
