@@ -83,7 +83,9 @@ Run the tests:
 DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --scratch-path ~/Library/Caches/SideClick/.build
 ```
 
-## Signing (one time)
+## Signing for development (optional)
+
+Only needed if you build from source. Users who install the DMG do not need a certificate.
 
 macOS ties the Accessibility permission to the app's signature. To stop the permission from
 disappearing after every build, create a local certificate:
