@@ -4,10 +4,19 @@ import Foundation
 public final class SettingsStore {
     public let fileURL: URL
 
-    public static var defaultFileURL: URL {
+    public static var supportDirectoryURL: URL {
         FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
             .appendingPathComponent("SideClick", isDirectory: true)
-            .appendingPathComponent("settings.json")
+    }
+
+    /// Where the app (then called XiaomiMouseFix) kept its files before 0.2.0.
+    public static var legacySupportDirectoryURL: URL {
+        FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent("XiaomiMouseFix", isDirectory: true)
+    }
+
+    public static var defaultFileURL: URL {
+        supportDirectoryURL.appendingPathComponent("settings.json")
     }
 
     public init(fileURL: URL = SettingsStore.defaultFileURL) {

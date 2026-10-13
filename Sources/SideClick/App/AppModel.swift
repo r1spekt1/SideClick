@@ -28,6 +28,12 @@ final class AppModel: ObservableObject {
     private var conflictTimer: Timer?
 
     init(store: SettingsStore = SettingsStore()) {
+        do {
+            try SupportDirectoryMigration.migrate(from: SettingsStore.legacySupportDirectoryURL,
+                                                  to: SettingsStore.supportDirectoryURL)
+        } catch {
+            log.error("Migrating the old settings failed: \(error.localizedDescription)")
+        }
         self.store = store
         settings = store.load()
         buttons.onButtonActivity = { [weak self] button, isDown in
