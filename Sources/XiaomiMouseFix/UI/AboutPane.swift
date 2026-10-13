@@ -13,8 +13,8 @@ struct AboutPane: View {
                 .frame(width: 96, height: 96)
                 .accessibilityHidden(true)
             Text("XiaomiMouseFix").font(.title2.bold())
-            Text("Verzija \(version)").foregroundStyle(.secondary)
-            Text("Podešavanja za Xiaomi Silent Mouse 2: programabilna side dugmad, pointer i scroll.")
+            Text("Version \(version)").foregroundStyle(.secondary)
+            Text("Programmable side buttons, pointer speed and smooth scrolling for any mouse.")
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: 320)
         }

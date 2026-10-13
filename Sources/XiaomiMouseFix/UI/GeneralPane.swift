@@ -9,8 +9,8 @@ struct GeneralPane: View {
     var body: some View {
         Form {
             Section {
-                Toggle("Uključi XiaomiMouseFix", isOn: $model.settings.isEnabled)
-                Toggle("Pokreni pri prijavi", isOn: $launchAtLogin)
+                Toggle("Enable XiaomiMouseFix", isOn: $model.settings.isEnabled)
+                Toggle("Launch at login", isOn: $launchAtLogin)
                     .onChange(of: launchAtLogin) { _, enabled in
                         // Reverting the toggle after a failure re-enters here; ignore that.
                         guard enabled != LaunchAtLogin.isEnabled else { return }
@@ -31,9 +31,9 @@ struct GeneralPane: View {
                     ? model.connectedMice.joined(separator: ", ") : "Not connected")
                 LabeledContent("Accessibility") {
                     if model.isAccessibilityGranted {
-                        Text("Odobreno")
+                        Text("Granted")
                     } else {
-                        Button("Odobri…") { model.requestAccessibility() }
+                        Button("Grant…") { model.requestAccessibility() }
                     }
                 }
             }
@@ -41,7 +41,7 @@ struct GeneralPane: View {
                 Section { ConflictWarning(names: model.conflicts) }
             }
             Section {
-                Button("Vrati podrazumevana podešavanja", role: .destructive) { model.settings = AppSettings() }
+                Button("Restore default settings", role: .destructive) { model.settings = AppSettings() }
             }
         }
         .formStyle(.grouped)

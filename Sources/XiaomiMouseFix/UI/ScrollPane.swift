@@ -5,24 +5,24 @@ struct ScrollPane: View {
 
     var body: some View {
         Form {
-            Section("Smer i korak") {
-                Toggle("Obrni smer skrolovanja", isOn: $model.settings.scroll.inverted)
-                LabeledContent("Korak") {
+            Section("Direction and step") {
+                Toggle("Reverse scroll direction", isOn: $model.settings.scroll.inverted)
+                LabeledContent("Step") {
                     HStack {
                         Slider(value: $model.settings.scroll.lineMultiplier, in: 0.25...5)
                         Text(String(format: "%.2g×", model.settings.scroll.lineMultiplier))
                             .monospacedDigit().frame(width: 44, alignment: .trailing)
                     }
                 }
-                Toggle("Shift skroluje horizontalno", isOn: $model.settings.scroll.shiftScrollsHorizontally)
+                Toggle("Shift scrolls horizontally", isOn: $model.settings.scroll.shiftScrollsHorizontally)
             }
-            Section("Glatko skrolovanje") {
-                Toggle("Uključi glatko skrolovanje", isOn: $model.settings.scroll.smoothEnabled)
+            Section("Smooth scrolling") {
+                Toggle("Enable smooth scrolling", isOn: $model.settings.scroll.smoothEnabled)
                 Group {
-                    LabeledContent("Brzina") {
+                    LabeledContent("Speed") {
                         Slider(value: $model.settings.scroll.smoothPixelsPerLine, in: 20...200)
                     }
-                    LabeledContent("Trajanje") {
+                    LabeledContent("Duration") {
                         HStack {
                             Slider(value: $model.settings.scroll.smoothDuration, in: 0.1...0.6)
                             Text("\(Int(model.settings.scroll.smoothDuration * 1000)) ms")

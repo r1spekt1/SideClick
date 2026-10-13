@@ -1,6 +1,6 @@
-App ikonica i menu bar simbol aplikacije XiaomiMouseFix.
+App icon and menu bar symbol of the XiaomiMouseFix app.
 
-- `AppIcon.png`: app ikonica, 1024 × 1024, providna van squircle-a. Za Finder, Dock, panel „O aplikaciji" i materijale o aplikaciji. Ne seci je, ne menjaj joj boje i ne stavljaj tekst preko nje.
-- `MenuBarIcon.svg`: menu bar template simbol na mreži od 18 pt, jedno mastilo: crna (`#000000`), prednje dugme na 40% providnosti. macOS ga sam boji u belo na tamnom menu baru; u mock-upu na tamnoj podlozi prikaži ga belog.
+- `AppIcon.png`: the app icon, 1024 × 1024, transparent outside the squircle. For Finder, the Dock, the "About" pane and app materials. Do not crop it, do not change its colors and do not put text over it.
+- `MenuBarIcon.svg`: the menu bar template symbol on an 18 pt grid, one ink: black (`#000000`), the front button at 40% opacity. macOS recolors it white on a dark menu bar; in a mock-up on a dark background show it white.
 
-Izvori i PNG u svim veličinama su u repou, u `Resources/Icon/`.
+The sources and PNGs in all sizes are in the repo, in `Resources/Icon/`.

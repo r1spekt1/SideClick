@@ -13,10 +13,10 @@ struct GestureActionRow: View {
     var body: some View {
         LabeledContent(gesture.title) {
             HStack {
-                Picker("Vrsta akcije", selection: kind) {
-                    Text("Ništa").tag(Kind.none)
-                    Text("Prečica").tag(Kind.shortcut)
-                    Text("Sistemska akcija").tag(Kind.system)
+                Picker("Action type", selection: kind) {
+                    Text("None").tag(Kind.none)
+                    Text("Shortcut").tag(Kind.shortcut)
+                    Text("System action").tag(Kind.system)
                 }
                 .labelsHidden()
                 .fixedSize()
@@ -25,7 +25,7 @@ struct GestureActionRow: View {
                 case .shortcut(let shortcut):
                     ShortcutRecorder(shortcut: Binding(get: { shortcut }, set: { action = .shortcut($0) }))
                 case .system(let systemAction):
-                    Picker("Sistemska akcija", selection: Binding(get: { systemAction }, set: { action = .system($0) })) {
+                    Picker("System action", selection: Binding(get: { systemAction }, set: { action = .system($0) })) {
                         ForEach(SystemAction.allCases, id: \.self) { Text($0.title).tag($0) }
                     }
                     .labelsHidden()

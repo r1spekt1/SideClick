@@ -6,22 +6,22 @@ struct PointerPane: View {
     var body: some View {
         Form {
             Section {
-                Toggle("Prilagodi pointer za Xiaomi miš", isOn: $model.settings.pointer.isCustomized)
-                Text("Kad je isključeno, važe sistemska podešavanja miša. Trackpad se nikad ne menja.")
+                Toggle("Customize pointer for external mice", isOn: $model.settings.pointer.isCustomized)
+                Text("When off, the system mouse settings apply. Trackpads are never changed.")
                     .font(.caption).foregroundStyle(.secondary)
             }
             Section {
-                LabeledContent("Brzina") {
+                LabeledContent("Speed") {
                     Slider(value: $model.settings.pointer.speed, in: 0.25...4) {
                         EmptyView()
                     } minimumValueLabel: {
-                        Text("Sporo")
+                        Text("Slow")
                     } maximumValueLabel: {
-                        Text("Brzo")
+                        Text("Fast")
                     }
                 }
-                Toggle("Akceleracija", isOn: $model.settings.pointer.accelerationEnabled)
-                LabeledContent("Jačina akceleracije") {
+                Toggle("Acceleration", isOn: $model.settings.pointer.accelerationEnabled)
+                LabeledContent("Acceleration strength") {
                     Slider(value: $model.settings.pointer.acceleration, in: 0...3)
                 }
                 .disabled(!model.settings.pointer.accelerationEnabled)

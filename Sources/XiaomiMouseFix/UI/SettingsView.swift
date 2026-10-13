@@ -7,11 +7,11 @@ enum SettingsPane: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .general: "Opšte"
+        case .general: "General"
         case .pointer: "Pointer"
         case .scroll: "Scroll"
-        case .buttons: "Dugmad"
-        case .about: "O aplikaciji"
+        case .buttons: "Buttons"
+        case .about: "About"
         }
     }
 

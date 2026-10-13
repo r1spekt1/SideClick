@@ -17,21 +17,21 @@ struct MenuBarView: View {
                     .font(.caption).foregroundStyle(.secondary)
             }
             if !model.isAccessibilityGranted {
-                Button("Odobri Accessibility pristup…") { model.requestAccessibility() }
+                Button("Grant Accessibility access…") { model.requestAccessibility() }
             }
             if !model.conflicts.isEmpty {
                 ConflictWarning(names: model.conflicts)
             }
             Divider()
-            Toggle("Uključeno", isOn: $model.settings.isEnabled)
-            Toggle("Glatko skrolovanje", isOn: $model.settings.scroll.smoothEnabled)
-            Toggle("Obrni skrolovanje", isOn: $model.settings.scroll.inverted)
+            Toggle("Enabled", isOn: $model.settings.isEnabled)
+            Toggle("Smooth scrolling", isOn: $model.settings.scroll.smoothEnabled)
+            Toggle("Reverse scrolling", isOn: $model.settings.scroll.inverted)
             Divider()
-            Button("Podešavanja…") {
+            Button("Settings…") {
                 openWindow(id: "settings")
                 NSApp.activate(ignoringOtherApps: true)
             }
-            Button("Izađi") { NSApp.terminate(nil) }
+            Button("Quit") { NSApp.terminate(nil) }
         }
         .toggleStyle(.switch)
         .padding(14)

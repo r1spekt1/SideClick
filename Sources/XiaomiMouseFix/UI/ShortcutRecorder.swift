@@ -9,7 +9,7 @@ struct ShortcutRecorder: View {
     @State private var monitor: Any?
 
     var body: some View {
-        Button(isRecording ? "Pritisni prečicu…" : shortcut.displayString) {
+        Button(isRecording ? "Press a shortcut…" : shortcut.displayString) {
             isRecording ? stopRecording() : startRecording()
         }
         .monospaced()

@@ -11,12 +11,12 @@ struct ButtonsPane: View {
                 HStack(spacing: 24) {
                     MouseIllustration(selected: $selected, pressed: model.pressedButtons)
                     VStack(alignment: .leading, spacing: 8) {
-                        Picker("Dugme", selection: $selected) {
+                        Picker("Button", selection: $selected) {
                             ForEach(SideButton.allCases, id: \.self) { Text($0.title).tag($0) }
                         }
                         .pickerStyle(.segmented)
                         .labelsHidden()
-                        Text("Pritisni side dugme na mišu: osvetliće se na slici.")
+                        Text("Press a side button on your mouse: it lights up in the picture.")
                             .font(.caption).foregroundStyle(.secondary)
                     }
                 }
@@ -29,20 +29,20 @@ struct ButtonsPane: View {
             }
             // New rows per button, so an armed shortcut recorder cannot record into another button.
             .id(selected)
-            Section("Vreme") {
-                LabeledContent("Prozor za više klikova") {
+            Section("Timing") {
+                LabeledContent("Multi-click window") {
                     HStack {
                         Slider(value: $model.settings.timing.multiClickWindow, in: 0.15...0.6)
                         milliseconds(model.settings.timing.multiClickWindow)
                     }
                 }
-                LabeledContent("Prag za dugo držanje") {
+                LabeledContent("Long-press threshold") {
                     HStack {
                         Slider(value: $model.settings.timing.longPressThreshold, in: 0.25...1.0)
                         milliseconds(model.settings.timing.longPressThreshold)
                     }
                 }
-                Text("Ako dugme ima samo „Jedan klik”, akcija se okida odmah, bez čekanja.")
+                Text("If a button only has \"Single click\", the action fires immediately, without waiting.")
                     .font(.caption).foregroundStyle(.secondary)
             }
         }

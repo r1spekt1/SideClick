@@ -3,8 +3,8 @@ import MouseCore
 extension SideButton {
     var title: String {
         switch self {
-        case .back: "Zadnje dugme"
-        case .forward: "Prednje dugme"
+        case .back: "Back button"
+        case .forward: "Forward button"
         }
     }
 }
@@ -12,10 +12,10 @@ extension SideButton {
 extension Gesture {
     var title: String {
         switch self {
-        case .single: "Jedan klik"
-        case .double: "Dupli klik"
-        case .triple: "Trostruki klik"
-        case .longPress: "Dugo držanje"
+        case .single: "Single click"
+        case .double: "Double click"
+        case .triple: "Triple click"
+        case .longPress: "Long press"
         }
     }
 }
@@ -23,14 +23,14 @@ extension Gesture {
 extension SystemAction {
     var title: String {
         switch self {
-        case .back: "Nazad"
-        case .forward: "Napred"
+        case .back: "Back"
+        case .forward: "Forward"
         case .missionControl: "Mission Control"
         case .appExpose: "App Exposé"
-        case .desktopLeft: "Desktop levo"
-        case .desktopRight: "Desktop desno"
+        case .desktopLeft: "Desktop left"
+        case .desktopRight: "Desktop right"
         case .launchpad: "Apps (Launchpad)"
-        case .showDesktop: "Prikaži desktop"
+        case .showDesktop: "Show Desktop"
         }
     }
 }

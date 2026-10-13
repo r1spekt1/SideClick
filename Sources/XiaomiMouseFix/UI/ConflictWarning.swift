@@ -5,7 +5,7 @@ struct ConflictWarning: View {
 
     var body: some View {
         Label {
-            Text("\(names.joined(separator: ", ")) presreće dodatna dugmad miša. Isključi njegove mouse funkcije da bi side dugmad radila ovde.")
+            Text("\(names.joined(separator: ", ")) is intercepting the extra mouse buttons. Turn off its mouse features so the side buttons work here.")
                 .font(.caption)
                 .fixedSize(horizontal: false, vertical: true)
         } icon: {
