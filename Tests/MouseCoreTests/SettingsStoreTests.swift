@@ -16,7 +16,7 @@ import Testing
         var settings = AppSettings()
         settings.isEnabled = false
         settings[.back].double = .shortcut(KeyShortcut(keyCode: 9, modifiers: .command, keyLabel: "V"))
-        settings.pointer.speed = 2
+        settings.pointer.acceleration = 2
         try store.save(settings)
         #expect(store.load() == settings)
     }

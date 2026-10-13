@@ -11,7 +11,6 @@ Odloženi nalazi iz code review-a (2026-10-12). Nijedan ne blokira upotrebu.
 - **Task 3:** duplicate buttonDown while already down (lost up) resets downAt → possible second long press; mapping/timing mutation contract (reset) only implied; coverage gaps (up-after-threshold w/o tick, click after long press, nextDeadline min across buttons)
 - **Task 4-6:** Int32()/Int64()/Int() conversions trap on NaN/huge values (wholeLines, animator step, PointerProperties.fixed) — sanitize at call sites
 - **Task 5:** negative dt moves wrong way (guard max(dt,0)); no fractional-carry / same-direction accumulation tests
-- **Task 6:** no test for disabled-accel + speed resolution combo
 - **Task 7:** build-app.sh `security find-identity | grep -q` under pipefail may SIGPIPE; untrusted identity would make codesign fail instead of falling back
 - **Task 7:** accessibility revocation never detected (flag goes stale); requestAccessibility double-prompts
 - **Task 7:** app bundle under ~/Library/Caches may be purged — matters for launch-at-login (SMAppService registers the bundle path); consider install-copy to ~/Applications at manual session

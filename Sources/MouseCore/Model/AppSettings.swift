@@ -41,10 +41,8 @@ public struct ButtonMapping: Codable, Hashable, Sendable {
 public struct PointerSettings: Codable, Hashable, Sendable {
     /// When false the app leaves the mouse at the system pointer settings.
     public var isCustomized = false
-    /// Speed multiplier relative to the mouse's native resolution (0.25...4).
-    public var speed = 1.0
     public var accelerationEnabled = true
-    /// macOS mouse acceleration curve value (0...3).
+    /// macOS tracking speed, the mouse acceleration curve value (0...3).
     public var acceleration = 1.0
 
     public init() {}

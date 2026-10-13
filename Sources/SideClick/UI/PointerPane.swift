@@ -11,18 +11,15 @@ struct PointerPane: View {
                     .font(.caption).foregroundStyle(.secondary)
             }
             Section {
-                LabeledContent("Speed") {
-                    Slider(value: $model.settings.pointer.speed, in: 0.25...4) {
+                Toggle("Acceleration", isOn: $model.settings.pointer.accelerationEnabled)
+                LabeledContent("Tracking speed") {
+                    Slider(value: $model.settings.pointer.acceleration, in: 0...3) {
                         EmptyView()
                     } minimumValueLabel: {
                         Text("Slow")
                     } maximumValueLabel: {
                         Text("Fast")
                     }
-                }
-                Toggle("Acceleration", isOn: $model.settings.pointer.accelerationEnabled)
-                LabeledContent("Acceleration strength") {
-                    Slider(value: $model.settings.pointer.acceleration, in: 0...3)
                 }
                 .disabled(!model.settings.pointer.accelerationEnabled)
             }

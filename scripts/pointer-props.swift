@@ -3,7 +3,12 @@
 import Foundation
 import IOKit.hidsystem
 
-let client = IOHIDEventSystemClientCreateSimpleClient(kCFAllocatorDefault)
+@_silgen_name("IOHIDEventSystemClientCreateWithType")
+func IOHIDEventSystemClientCreateWithType(_ allocator: CFAllocator?, _ type: Int32,
+                                         _ attributes: CFDictionary?) -> IOHIDEventSystemClient?
+
+// A passive client (type 2), like the app uses: a simple client sees only some properties.
+let client = IOHIDEventSystemClientCreateWithType(kCFAllocatorDefault, 2, nil)!
 let services = IOHIDEventSystemClientCopyServices(client) as? [IOHIDServiceClient] ?? []
 for service in services
 where (IOHIDServiceClientCopyProperty(service, "PrimaryUsagePage" as CFString) as? Int) == 1

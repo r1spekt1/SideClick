@@ -1,7 +1,7 @@
 # SideClick
 
 A macOS menu bar app for mice with back/forward side buttons: programmable side buttons
-(single / double / triple click and long press), pointer speed and acceleration,
+(single / double / triple click and long press), tracking speed and acceleration,
 smooth scroll, scroll invert, and Shift for horizontal scroll.
 
 Works with any external mouse whose side buttons are the standard mouse buttons 4 and 5.
@@ -50,7 +50,7 @@ Your settings are copied over automatically on first launch.
 
 Virtual HID pointing devices (for example from Karabiner-Elements or remote-desktop tools) can be listed as mice, and a mouse that exposes several mouse interfaces may be listed twice.
 
-The **Speed** slider on the Pointer pane works by changing the mouse's pointer resolution. The Xiaomi Silent Mouse 2 does not report a resolution and macOS rejects setting one on it (observed on macOS 27.0.1), so Speed has no effect on that mouse; use **Acceleration strength** instead, which changes the system tracking speed and does work. Whether other mice accept a resolution change is untested.
+**Tracking speed** on the Pointer pane sets the same value as System Settings → Mouse → Tracking speed, but only for external mice. There is no separate speed control: changing the mouse's pointer resolution, which earlier versions did, has no noticeable effect on macOS 27 (tested with a Xiaomi Silent Mouse 2 and a Whiteshark GM-9010).
 
 ## Build from source
 

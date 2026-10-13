@@ -3,7 +3,7 @@ import IOKit.hidsystem
 import MouseCore
 import os
 
-/// Applies pointer speed/acceleration to every external mouse's HID service and restores the
+/// Applies the tracking speed (acceleration) to every external mouse's HID service and restores the
 /// values the system had before we touched it. Originals are kept per device model, and also on
 /// disk, so a crashed or killed run does not leave the next launch capturing our custom values.
 @MainActor
@@ -18,7 +18,7 @@ final class PointerController {
     }
 
     private let log = Logger(subsystem: "com.r1spekt1.SideClick", category: "pointer")
-    private let client = IOHIDEventSystemClientCreateSimpleClient(kCFAllocatorDefault)
+    private let client = PointerController.makeClient()
     private let store: PointerOriginalsStore
     /// System values captured before the first change on the current connection, per device key.
     private var originals = PointerOriginals()
@@ -37,12 +37,10 @@ final class PointerController {
             log.info("Pointer customization is on but no external mouse HID service is listed yet")
             return
         }
+        let props = PointerProperties(settings: settings)
         for target in targets {
-            let values = originalValues(for: target)
-            let native = values[PointerProperties.resolutionKey] ?? PointerProperties.defaultResolution
-            let props = PointerProperties(settings: settings, nativeResolution: native)
+            rememberOriginals(of: target)
             set(target.service, PointerProperties.accelerationKey, props.acceleration)
-            set(target.service, PointerProperties.resolutionKey, props.resolution)
         }
     }
 
@@ -55,8 +53,14 @@ final class PointerController {
         var restored: Set<String> = []
         var failed: Set<String> = []
         for target in mouseServices() {
-            guard let values = pending[target.key] else { continue }
-            for (key, value) in values {
+            guard var values = pending[target.key] else { continue }
+            // Values saved by earlier versions can hold a resolution; hidd picks it up only with
+            // an acceleration write after it.
+            if values[PointerProperties.accelerationKey] == nil,
+               let current = IOHIDServiceClientCopyProperty(target.service, PointerProperties.accelerationKey as CFString) as? Int {
+                values[PointerProperties.accelerationKey] = current
+            }
+            for (key, value) in PointerProperties.writeOrder(values) {
                 if IOHIDServiceClientSetProperty(target.service, key as CFString, NSNumber(value: value)) {
                     restored.insert(target.key)
                 } else {
@@ -77,26 +81,20 @@ final class PointerController {
         originals = PointerOriginals()
     }
 
-    private func originalValues(for target: Target) -> PointerOriginals.Values {
-        if let values = originals[target.key] { return values }
+    private func rememberOriginals(of target: Target) {
+        guard originals[target.key] == nil else { return }
         var saved = store.load() ?? PointerOriginals()
         if let values = saved[target.key] {
             originals[target.key] = values
-            return values
+            return
         }
-        let captured = capture(target.service)
+        var captured: PointerOriginals.Values = [:]
+        if let value = IOHIDServiceClientCopyProperty(target.service, PointerProperties.accelerationKey as CFString) as? Int {
+            captured[PointerProperties.accelerationKey] = value
+        }
         originals[target.key] = captured
         saved[target.key] = captured
         persist(saved)
-        return captured
-    }
-
-    private func capture(_ service: IOHIDServiceClient) -> PointerOriginals.Values {
-        var values = [PointerProperties.resolutionKey: PointerProperties.defaultResolution]
-        for key in [PointerProperties.accelerationKey, PointerProperties.resolutionKey] {
-            if let value = IOHIDServiceClientCopyProperty(service, key as CFString) as? Int { values[key] = value }
-        }
-        return values
     }
 
     private func persist(_ saved: PointerOriginals) {
@@ -123,6 +121,17 @@ final class PointerController {
         }
     }
 
+    /// A simple client sees only part of a service's properties: in the app it could not read the
+    /// vendor and product IDs or set `HIDMouseAcceleration` (observed on macOS 27). A passive client
+    /// gets the full property set without receiving events. Its constructor is not in the public
+    /// headers; the simple client is the fallback.
+    private static func makeClient() -> IOHIDEventSystemClient {
+        IOHIDEventSystemClientCreateWithType(kCFAllocatorDefault, passiveClientType, nil)
+            ?? IOHIDEventSystemClientCreateSimpleClient(kCFAllocatorDefault)
+    }
+
+    private static let passiveClientType: Int32 = 2
+
     private func mouseServices() -> [Target] {
         let services = IOHIDEventSystemClientCopyServices(client) as? [IOHIDServiceClient] ?? []
         return services.compactMap { service in
@@ -131,3 +140,7 @@ final class PointerController {
         }
     }
 }
+
+@_silgen_name("IOHIDEventSystemClientCreateWithType")
+private func IOHIDEventSystemClientCreateWithType(_ allocator: CFAllocator?, _ type: Int32,
+                                                  _ attributes: CFDictionary?) -> IOHIDEventSystemClient?
