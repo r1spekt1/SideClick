@@ -8,12 +8,12 @@ struct MenuBarView: View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
                 Image(systemName: "computermouse.fill")
-                Text("Xiaomi Silent Mouse 2").font(.headline)
+                Text(model.mouseTitle).font(.headline).lineLimit(1).truncationMode(.tail)
                 Spacer()
                 Circle()
                     .fill(model.isMouseConnected ? Color.green : Color.secondary)
                     .frame(width: 8, height: 8)
-                Text(model.isMouseConnected ? "Povezan" : "Nije povezan")
+                Text(model.isMouseConnected ? "Connected" : "Not connected")
                     .font(.caption).foregroundStyle(.secondary)
             }
             if !model.isAccessibilityGranted {

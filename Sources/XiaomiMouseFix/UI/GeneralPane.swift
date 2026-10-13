@@ -27,7 +27,8 @@ struct GeneralPane: View {
                 }
             }
             Section("Status") {
-                LabeledContent("Miš", value: model.isMouseConnected ? "Povezan" : "Nije povezan")
+                LabeledContent("Mouse", value: model.isMouseConnected
+                    ? model.connectedMice.joined(separator: ", ") : "Not connected")
                 LabeledContent("Accessibility") {
                     if model.isAccessibilityGranted {
                         Text("Odobreno")

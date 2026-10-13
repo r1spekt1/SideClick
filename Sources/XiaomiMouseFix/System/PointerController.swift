@@ -3,23 +3,28 @@ import IOKit.hidsystem
 import MouseCore
 import os
 
-/// Applies pointer speed/acceleration to the Xiaomi HID service only and restores the
-/// values the system had before we touched it. The captured values are also kept on disk,
-/// so a crashed or killed run does not leave the next launch capturing our custom values.
+/// Applies pointer speed/acceleration to every external mouse's HID service and restores the
+/// values the system had before we touched it. Originals are kept per device model, and also on
+/// disk, so a crashed or killed run does not leave the next launch capturing our custom values.
 @MainActor
 final class PointerController {
     nonisolated static var defaultOriginalsURL: URL {
         SettingsStore.defaultFileURL.deletingLastPathComponent().appendingPathComponent("pointer-originals.json")
     }
 
+    private struct Target {
+        let service: IOHIDServiceClient
+        let key: String
+    }
+
     private let log = Logger(subsystem: "com.local.XiaomiMouseFix", category: "pointer")
     private let client = IOHIDEventSystemClientCreateSimpleClient(kCFAllocatorDefault)
-    private let originalsURL: URL
-    /// System values captured before the first change on the current connection.
-    private var originals: [String: Int]?
+    private let store: PointerOriginalsStore
+    /// System values captured before the first change on the current connection, per device key.
+    private var originals = PointerOriginals()
 
     init(originalsURL: URL = PointerController.defaultOriginalsURL) {
-        self.originalsURL = originalsURL
+        store = PointerOriginalsStore(fileURL: originalsURL)
     }
 
     func apply(_ settings: PointerSettings) {
@@ -27,52 +32,66 @@ final class PointerController {
             restore()
             return
         }
-        let services = xiaomiServices()
-        guard let first = services.first else {
-            log.info("Pointer customization is on but no Xiaomi HID service is listed yet")
+        let targets = mouseServices()
+        guard !targets.isEmpty else {
+            log.info("Pointer customization is on but no external mouse HID service is listed yet")
             return
         }
-        if originals == nil {
-            if let saved = loadSavedOriginals() {
-                originals = saved
-            } else {
-                let captured = capture(first)
-                originals = captured
-                save(captured)
-            }
-        }
-        let props = PointerProperties(settings: settings)
-        for service in services {
-            set(service, PointerProperties.accelerationKey, props.acceleration)
-            set(service, PointerProperties.resolutionKey, props.resolution)
+        for target in targets {
+            let values = originalValues(for: target)
+            let native = values[PointerProperties.resolutionKey] ?? PointerProperties.defaultResolution
+            let props = PointerProperties(settings: settings, nativeResolution: native)
+            set(target.service, PointerProperties.accelerationKey, props.acceleration)
+            set(target.service, PointerProperties.resolutionKey, props.resolution)
         }
     }
 
     func restore() {
         // After a crash only the file still knows the values from before our change.
-        guard let originals = originals ?? loadSavedOriginals() else { return }
-        let services = xiaomiServices()
-        // Keep the file until the values actually reached a service (it can be listed late).
-        var succeeded = !services.isEmpty
-        for service in services {
-            for (key, value) in originals {
-                if !IOHIDServiceClientSetProperty(service, key as CFString, NSNumber(value: value)) {
+        var pending = store.load() ?? PointerOriginals()
+        for (key, values) in originals.devices { pending[key] = values }
+        guard !pending.isEmpty else { return }
+
+        var restored: Set<String> = []
+        var failed: Set<String> = []
+        for target in mouseServices() {
+            guard let values = pending[target.key] else { continue }
+            for (key, value) in values {
+                if IOHIDServiceClientSetProperty(target.service, key as CFString, NSNumber(value: value)) {
+                    restored.insert(target.key)
+                } else {
                     log.error("Restoring \(key) to \(value) failed")
-                    succeeded = false
+                    failed.insert(target.key)
                 }
             }
         }
-        self.originals = nil
-        if succeeded { removeSavedOriginals() }
+        originals = PointerOriginals()
+        // Keep a device's saved values until they actually reached its service (it can be listed
+        // late, or be unplugged right now).
+        forgetSaved(restored.subtracting(failed))
     }
 
     /// Forgets the in-memory copy only: the saved snapshot from before our change is still
     /// the right value to restore once the mouse is back.
     func deviceDisconnected() {
-        originals = nil
+        originals = PointerOriginals()
     }
 
-    private func capture(_ service: IOHIDServiceClient) -> [String: Int] {
+    private func originalValues(for target: Target) -> PointerOriginals.Values {
+        if let values = originals[target.key] { return values }
+        var saved = store.load() ?? PointerOriginals()
+        if let values = saved[target.key] {
+            originals[target.key] = values
+            return values
+        }
+        let captured = capture(target.service)
+        originals[target.key] = captured
+        saved[target.key] = captured
+        persist(saved)
+        return captured
+    }
+
+    private func capture(_ service: IOHIDServiceClient) -> PointerOriginals.Values {
         var values = [PointerProperties.resolutionKey: PointerProperties.defaultResolution]
         for key in [PointerProperties.accelerationKey, PointerProperties.resolutionKey] {
             if let value = IOHIDServiceClientCopyProperty(service, key as CFString) as? Int { values[key] = value }
@@ -80,27 +99,21 @@ final class PointerController {
         return values
     }
 
-    private func loadSavedOriginals() -> [String: Int]? {
-        guard let data = try? Data(contentsOf: originalsURL) else { return nil }
-        return try? JSONDecoder().decode([String: Int].self, from: data)
-    }
-
-    private func save(_ values: [String: Int]) {
+    private func persist(_ saved: PointerOriginals) {
         do {
-            try FileManager.default.createDirectory(at: originalsURL.deletingLastPathComponent(),
-                                                    withIntermediateDirectories: true)
-            try JSONEncoder().encode(values).write(to: originalsURL, options: .atomic)
+            try store.save(saved)
         } catch {
             log.error("Saving pointer originals failed: \(error.localizedDescription)")
         }
     }
 
-    private func removeSavedOriginals() {
-        guard FileManager.default.fileExists(atPath: originalsURL.path) else { return }
+    private func forgetSaved(_ keys: Set<String>) {
+        guard !keys.isEmpty, var saved = store.load() else { return }
+        for key in keys { saved[key] = nil }
         do {
-            try FileManager.default.removeItem(at: originalsURL)
+            if saved.isEmpty { try store.remove() } else { try store.save(saved) }
         } catch {
-            log.error("Removing pointer originals failed: \(error.localizedDescription)")
+            log.error("Updating pointer originals failed: \(error.localizedDescription)")
         }
     }
 
@@ -110,17 +123,11 @@ final class PointerController {
         }
     }
 
-    private func xiaomiServices() -> [IOHIDServiceClient] {
+    private func mouseServices() -> [Target] {
         let services = IOHIDEventSystemClientCopyServices(client) as? [IOHIDServiceClient] ?? []
-        return services.filter { service in
-            intProperty(service, kIOHIDVendorIDKey) == DeviceMonitor.vendorID
-                && intProperty(service, kIOHIDProductIDKey) == DeviceMonitor.productID
-                && intProperty(service, kIOHIDPrimaryUsagePageKey) == kHIDPage_GenericDesktop
-                && intProperty(service, kIOHIDPrimaryUsageKey) == kHIDUsage_GD_Mouse
+        return services.compactMap { service in
+            let info = HIDDeviceInfo(service: service)
+            return info.isExternalMouse ? Target(service: service, key: info.key) : nil
         }
-    }
-
-    private func intProperty(_ service: IOHIDServiceClient, _ key: String) -> Int? {
-        IOHIDServiceClientCopyProperty(service, key as CFString) as? Int
     }
 }

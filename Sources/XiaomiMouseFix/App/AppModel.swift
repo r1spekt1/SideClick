@@ -12,7 +12,9 @@ final class AppModel: ObservableObject {
     }
     @Published private(set) var isAccessibilityGranted = Permissions.isAccessibilityGranted
     @Published private(set) var pressedButtons: Set<SideButton> = []
-    @Published private(set) var isMouseConnected = false
+    @Published private(set) var connectedMice: [String] = []
+    var isMouseConnected: Bool { !connectedMice.isEmpty }
+    var mouseTitle: String { MouseSummary.title(for: connectedMice) }
     @Published private(set) var conflicts: [String] = []
 
     private let store: SettingsStore
@@ -31,10 +33,12 @@ final class AppModel: ObservableObject {
         buttons.onButtonActivity = { [weak self] button, isDown in
             if isDown { self?.pressedButtons.insert(button) } else { self?.pressedButtons.remove(button) }
         }
-        device.onChange = { [weak self] connected in
+        device.onChange = { [weak self] names in
             guard let self else { return }
-            self.isMouseConnected = connected
-            if connected {
+            self.connectedMice = names
+            if names.isEmpty {
+                self.pointer.deviceDisconnected()
+            } else {
                 self.applySettings()
                 // The HID service can appear shortly after the device, so retry.
                 for delay in [0.5, 2.0] {
@@ -42,8 +46,6 @@ final class AppModel: ObservableObject {
                         MainActor.assumeIsolated { self?.applySettings() }
                     }
                 }
-            } else {
-                self.pointer.deviceDisconnected()
             }
         }
         device.start()
