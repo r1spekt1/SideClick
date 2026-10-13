@@ -39,9 +39,16 @@ asks for it on first launch.
 ### Upgrading from XiaomiMouseFix
 
 SideClick is the new name of XiaomiMouseFix (0.1.0). It has a new bundle identifier, so:
-grant **Accessibility** again, and remove the old `XiaomiMouseFix` entry from **System Settings →
-General → Login Items** if you had enabled "Launch at login". Your settings are copied over
-automatically on first launch.
+
+1. Quit XiaomiMouseFix from its menu bar menu and delete it. Running both at once makes them fight over the side buttons, scroll and pointer settings. Also remove its entry from **System Settings → General → Login Items** if you had enabled "Launch at login".
+2. Open SideClick and grant **Accessibility** again.
+3. Turn "Launch at login" on again in SideClick → General if you used it.
+
+Your settings are copied over automatically on first launch.
+
+### Known limitations
+
+Virtual HID pointing devices (for example from Karabiner-Elements or remote-desktop tools) can be listed as mice, and a mouse that exposes several mouse interfaces may be listed twice.
 
 ## Build from source
 
@@ -82,6 +89,8 @@ disappearing after every build, create a local certificate:
 1. Open **Keychain Access → Certificate Assistant → Create a Certificate…**
 2. Name: `SideClick Dev`, Identity Type: **Self-Signed Root**, Certificate Type: **Code Signing**.
 3. Click **Create**. `scripts/build-app.sh` picks it up automatically.
+
+If you created the certificate under the old name `XiaomiMouseFix Dev`, either create `SideClick Dev` or build with `SIGN_IDENTITY="XiaomiMouseFix Dev" scripts/build-app.sh`.
 
 Without the certificate the build is ad-hoc signed. After each build, remove the app from
 **System Settings → Privacy & Security → Accessibility** and approve it again. Quit the app

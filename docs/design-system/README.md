@@ -12,7 +12,7 @@ SideClick is a macOS menu bar app for any external mouse. It looks like part of 
 - UI text is in English: "Settings", "Shortcut", "Long press", "Reverse scroll direction".
 - A control says what it does, briefly, in the imperative: "Enable smooth scrolling", "Launch at login", "Grant Accessibility access…", "Restore default settings".
 - Use an ellipsis (`…`) only when the action opens a new window or asks for an additional step: "Settings…", "Grant…".
-- Helper text is one sentence in the `caption` style, `secondary-label` color, below the control: "If a button only has "Single click", the action fires immediately, without waiting."
+- Helper text is one sentence in the `caption` style, `secondary-label` color, below the control: "If a button only has 'Single click', the action fires immediately, without waiting."
 - Statuses are short adjectives or participles: "Connected", "Not connected", "Granted".
 - An error says what happened and what the user should do. Example from the app: "Vorssaint is intercepting the extra mouse buttons. Turn off its mouse features so the side buttons work here."
 - System and product names stay as Apple and the vendors spell them: Accessibility, Mission Control, App Exposé.

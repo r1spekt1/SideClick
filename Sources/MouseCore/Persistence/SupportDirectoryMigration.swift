@@ -5,7 +5,7 @@ public enum SupportDirectoryMigration {
     public static let migratedFiles = ["settings.json", "pointer-originals.json"]
 
     /// Copies the known files from `old` into `new`. Does nothing when `new` already exists or
-    /// `old` does not; the old directory is never modified. Returns whether anything was copied.
+    /// `old` does not; the old directory is never modified. Returns whether the migration ran (the new directory was created).
     @discardableResult
     public static func migrate(from old: URL, to new: URL, fileManager: FileManager = .default) throws -> Bool {
         guard !fileManager.fileExists(atPath: new.path), fileManager.fileExists(atPath: old.path) else {
