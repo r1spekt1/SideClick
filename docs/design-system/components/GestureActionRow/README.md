@@ -7,4 +7,4 @@ One Form row on the Buttons pane that maps a gesture (Single click, Double click
 - Layout: `LabeledContent` with the gesture title as label; trailing an action-kind pop-up ("None", "Shortcut", "System action"), followed by a ShortcutRecorder or a system-action pop-up ("Back", "Forward", "Mission Control", "App Exposé", "Desktop left", "Desktop right", "Apps (Launchpad)", "Show Desktop").
 - Pop-ups use `.fixedSize()` and hidden labels so the row stays one line at `detail-min-width`.
 
-Source: `Sources/XiaomiMouseFix/UI/GestureActionRow.swift`.
+Source: `Sources/SideClick/UI/GestureActionRow.swift`.

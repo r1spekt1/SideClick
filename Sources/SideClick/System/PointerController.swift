@@ -17,7 +17,7 @@ final class PointerController {
         let key: String
     }
 
-    private let log = Logger(subsystem: "com.local.XiaomiMouseFix", category: "pointer")
+    private let log = Logger(subsystem: "com.r1spekt1.SideClick", category: "pointer")
     private let client = IOHIDEventSystemClientCreateSimpleClient(kCFAllocatorDefault)
     private let store: PointerOriginalsStore
     /// System values captured before the first change on the current connection, per device key.

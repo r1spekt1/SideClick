@@ -8,4 +8,4 @@ A top-down drawing of the mouse with its two side buttons on the left edge; clic
 - Side buttons: `side-button-width` × `side-button-height`, `radius-side-button`, `space-8` apart, front button above the rear one. Idle `side-button-idle`; pressed fills `accent`; selected adds a 2px `accent` ring.
 - Each button keeps its accessibility label ("Forward button", "Back button") and a tooltip with the same text.
 
-Source: `Sources/XiaomiMouseFix/UI/MouseIllustration.swift`.
+Source: `Sources/SideClick/UI/MouseIllustration.swift`.

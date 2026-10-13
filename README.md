@@ -1,20 +1,24 @@
-# XiaomiMouseFix
+# SideClick
 
-A macOS menu bar app for the Xiaomi Silent Mouse 2: programmable side buttons
+A macOS menu bar app for mice with back/forward side buttons: programmable side buttons
 (single / double / triple click and long press), pointer speed and acceleration,
 smooth scroll, scroll invert, and Shift for horizontal scroll.
 
+Works with any external mouse whose side buttons are the standard mouse buttons 4 and 5.
+It is developed and tested on a Xiaomi Silent Mouse 2; other mice should work but are untested,
+so reports are welcome.
+
 ## Why
 
-The mouse is a standard one: the side buttons are mouse buttons 4 and 5. Some apps, for
+Side buttons are standard mouse buttons 4 and 5. Some apps, for
 example Vorssaint, install an event tap that swallows those buttons, so other software never
-sees them (see `docs/spike/`). Turn off the mouse features in such apps. XiaomiMouseFix warns
+sees them (see `docs/spike/`). Turn off the mouse features in such apps. SideClick warns
 you when it detects this.
 
 ## Install
 
-Download the latest `.dmg` from [Releases](https://github.com/r1spekt1/XiaomiMouseFix/releases),
-open it, and drag `XiaomiMouseFix.app` onto the `Applications` shortcut.
+Download the latest `.dmg` from [Releases](https://github.com/r1spekt1/SideClick/releases),
+open it, and drag `SideClick.app` onto the `Applications` shortcut.
 
 Requires macOS 14+ and Apple Silicon. The only permission needed is **Accessibility**; the app
 asks for it on first launch.
@@ -22,15 +26,22 @@ asks for it on first launch.
 > The app is ad-hoc signed and not notarized, so Gatekeeper blocks it on first launch. Either:
 >
 > - open **System Settings → Privacy & Security** and click **Open Anyway** next to the
->   XiaomiMouseFix message (macOS 15+; on macOS 14 right-click the app and choose **Open**), or
+>   SideClick message (macOS 15+; on macOS 14 right-click the app and choose **Open**), or
 > - remove the quarantine flag once:
 >
 >   ```bash
->   xattr -dr com.apple.quarantine /Applications/XiaomiMouseFix.app
+>   xattr -dr com.apple.quarantine /Applications/SideClick.app
 >   ```
 >
 > Because the signature is ad-hoc, macOS also asks you to re-grant Accessibility after you
 > replace the app with a newer version.
+
+### Upgrading from XiaomiMouseFix
+
+SideClick is the new name of XiaomiMouseFix (0.1.0). It has a new bundle identifier, so:
+grant **Accessibility** again, and remove the old `XiaomiMouseFix` entry from **System Settings →
+General → Login Items** if you had enabled "Launch at login". Your settings are copied over
+automatically on first launch.
 
 ## Build from source
 
@@ -41,11 +52,11 @@ scripts/build-app.sh
 Install into `~/Applications` (a stable path for Accessibility and "Launch at login"):
 
 ```bash
-pkill -x XiaomiMouseFix; ditto ~/Library/Caches/XiaomiMouseFix/XiaomiMouseFix.app ~/Applications/XiaomiMouseFix.app
+pkill -x SideClick; ditto ~/Library/Caches/SideClick/SideClick.app ~/Applications/SideClick.app
 ```
 
 ```bash
-open ~/Applications/XiaomiMouseFix.app
+open ~/Applications/SideClick.app
 ```
 
 To produce a drag-to-Applications DMG (ad-hoc signed) next to the app:
@@ -54,13 +65,13 @@ To produce a drag-to-Applications DMG (ad-hoc signed) next to the app:
 scripts/make-dmg.sh
 ```
 
-The build is created outside the repo (in `~/Library/Caches/XiaomiMouseFix`) because
+The build is created outside the repo (in `~/Library/Caches/SideClick`) because
 `~/Documents` can be synced by iCloud, and iCloud's extended attributes break `codesign`.
 
 Run the tests:
 
 ```bash
-DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --scratch-path ~/Library/Caches/XiaomiMouseFix/.build
+DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test --scratch-path ~/Library/Caches/SideClick/.build
 ```
 
 ## Signing (one time)
@@ -69,7 +80,7 @@ macOS ties the Accessibility permission to the app's signature. To stop the perm
 disappearing after every build, create a local certificate:
 
 1. Open **Keychain Access → Certificate Assistant → Create a Certificate…**
-2. Name: `XiaomiMouseFix Dev`, Identity Type: **Self-Signed Root**, Certificate Type: **Code Signing**.
+2. Name: `SideClick Dev`, Identity Type: **Self-Signed Root**, Certificate Type: **Code Signing**.
 3. Click **Create**. `scripts/build-app.sh` picks it up automatically.
 
 Without the certificate the build is ad-hoc signed. After each build, remove the app from

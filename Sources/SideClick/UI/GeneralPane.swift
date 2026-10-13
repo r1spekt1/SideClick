@@ -9,7 +9,7 @@ struct GeneralPane: View {
     var body: some View {
         Form {
             Section {
-                Toggle("Enable XiaomiMouseFix", isOn: $model.settings.isEnabled)
+                Toggle("Enable SideClick", isOn: $model.settings.isEnabled)
                 Toggle("Launch at login", isOn: $launchAtLogin)
                     .onChange(of: launchAtLogin) { _, enabled in
                         // Reverting the toggle after a failure re-enters here; ignore that.

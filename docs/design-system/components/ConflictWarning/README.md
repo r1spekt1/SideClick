@@ -1,6 +1,6 @@
 # ConflictWarning
 
-A warning row naming other apps that intercept the extra mouse buttons, so the side buttons cannot reach XiaomiMouseFix.
+A warning row naming other apps that intercept the extra mouse buttons, so the side buttons cannot reach SideClick.
 
 - Show it in the popover and in the General pane only while `AppModel.conflicts` is not empty.
 - The consumer supplies `names: [String]`, the localized app names, joined with ", ".
@@ -8,4 +8,4 @@ A warning row naming other apps that intercept the extra mouse buttons, so the s
 - Copy pattern: "<names> is intercepting the extra mouse buttons. Turn off its mouse features so the side buttons work here."
 - Never put the warning color on the text; the sentence carries the meaning.
 
-Source: `Sources/XiaomiMouseFix/UI/ConflictWarning.swift`.
+Source: `Sources/SideClick/UI/ConflictWarning.swift`.

@@ -12,7 +12,7 @@ struct AboutPane: View {
                 .resizable()
                 .frame(width: 96, height: 96)
                 .accessibilityHidden(true)
-            Text("XiaomiMouseFix").font(.title2.bold())
+            Text("SideClick").font(.title2.bold())
             Text("Version \(version)").foregroundStyle(.secondary)
             Text("Programmable side buttons, pointer speed and smooth scrolling for any mouse.")
                 .multilineTextAlignment(.center)

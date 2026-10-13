@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct XiaomiMouseFixApp: App {
+struct SideClickApp: App {
     @StateObject private var model = AppModel()
 
     var body: some Scene {
@@ -12,7 +12,7 @@ struct XiaomiMouseFixApp: App {
         }
         .menuBarExtraStyle(.window)
 
-        Window("XiaomiMouseFix", id: "settings") {
+        Window("SideClick", id: "settings") {
             SettingsView(model: model)
         }
         .windowResizability(.contentMinSize)
@@ -35,6 +35,6 @@ private struct MenuBarLabel: View {
                 Image(systemName: "computermouse")
             }
         }
-        .accessibilityLabel("XiaomiMouseFix")
+        .accessibilityLabel("SideClick")
     }
 }

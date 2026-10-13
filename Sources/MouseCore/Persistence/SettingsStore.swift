@@ -6,7 +6,7 @@ public final class SettingsStore {
 
     public static var defaultFileURL: URL {
         FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent("XiaomiMouseFix", isDirectory: true)
+            .appendingPathComponent("SideClick", isDirectory: true)
             .appendingPathComponent("settings.json")
     }
 

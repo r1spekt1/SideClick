@@ -1,4 +1,4 @@
-/// The two side buttons of the Xiaomi mouse, identified by their CGEvent button number.
+/// The two side buttons of a mouse, identified by their CGEvent button number.
 public enum SideButton: String, Codable, CaseIterable, Sendable {
     /// Rear side button (HID button 4).
     case back

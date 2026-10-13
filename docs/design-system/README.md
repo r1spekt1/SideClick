@@ -1,4 +1,4 @@
-XiaomiMouseFix is a macOS menu bar app for any external mouse. It looks like part of the system: Apple HIG, SwiftUI system styles and SF Symbols, with a single accent that follows the user's system color. Every value here describes what SwiftUI already draws. In Swift code use semantic styles (`.primary`, `.secondary`, `Color.accentColor`, `.quaternary`), never the hex values from `tokens.json`. The hex values are for documentation and web mock-ups only.
+SideClick is a macOS menu bar app for any external mouse. It looks like part of the system: Apple HIG, SwiftUI system styles and SF Symbols, with a single accent that follows the user's system color. Every value here describes what SwiftUI already draws. In Swift code use semantic styles (`.primary`, `.secondary`, `Color.accentColor`, `.quaternary`), never the hex values from `tokens.json`. The hex values are for documentation and web mock-ups only.
 
 ## Principles
 

@@ -2,7 +2,7 @@ import AppKit
 import MouseCore
 import os
 
-private let log = Logger(subsystem: "com.local.XiaomiMouseFix", category: "app")
+private let log = Logger(subsystem: "com.r1spekt1.SideClick", category: "app")
 
 /// Owns the settings and the system controllers; the single source of truth for the UI.
 @MainActor

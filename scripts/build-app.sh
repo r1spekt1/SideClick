@@ -1,23 +1,23 @@
 #!/usr/bin/env bash
-# Builds XiaomiMouseFix.app outside the (iCloud-synced) repo, in
-# $XMF_BUILD_ROOT (default ~/Library/Caches/XiaomiMouseFix), and signs it with a
+# Builds SideClick.app outside the (iCloud-synced) repo, in
+# $XMF_BUILD_ROOT (default ~/Library/Caches/SideClick), and signs it with a
 # stable identity when available, so the Accessibility permission survives rebuilds.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 export DEVELOPER_DIR="${DEVELOPER_DIR:-/Applications/Xcode.app/Contents/Developer}"
 CONFIG="${1:-release}"
-IDENTITY="${SIGN_IDENTITY:-XiaomiMouseFix Dev}"
-BUILD_ROOT="${XMF_BUILD_ROOT:-$HOME/Library/Caches/XiaomiMouseFix}"
-APP="$BUILD_ROOT/XiaomiMouseFix.app"
+IDENTITY="${SIGN_IDENTITY:-SideClick Dev}"
+BUILD_ROOT="${XMF_BUILD_ROOT:-$HOME/Library/Caches/SideClick}"
+APP="$BUILD_ROOT/SideClick.app"
 
-swift build -c "$CONFIG" --product XiaomiMouseFix --scratch-path "$BUILD_ROOT/.build"
+swift build -c "$CONFIG" --product SideClick --scratch-path "$BUILD_ROOT/.build"
 BIN_DIR="$(swift build -c "$CONFIG" --show-bin-path --scratch-path "$BUILD_ROOT/.build")"
 
 # Quit a running copy first (SIGTERM, so it restores the pointer settings).
-pkill -x XiaomiMouseFix && sleep 1 || true
+pkill -x SideClick && sleep 1 || true
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
-cp "$BIN_DIR/XiaomiMouseFix" "$APP/Contents/MacOS/XiaomiMouseFix"
+cp "$BIN_DIR/SideClick" "$APP/Contents/MacOS/SideClick"
 cp Resources/Info.plist "$APP/Contents/Info.plist"
 cp Resources/AppIcon.icns Resources/MenuBarIcon.png Resources/MenuBarIcon@2x.png "$APP/Contents/Resources/"
 
