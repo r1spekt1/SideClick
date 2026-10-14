@@ -1,5 +1,6 @@
 import AppKit
 import ApplicationServices
+import IOKit.hid
 
 enum Permissions {
     static var isAccessibilityGranted: Bool { AXIsProcessTrusted() }
@@ -12,6 +13,22 @@ enum Permissions {
 
     static func openAccessibilitySettings() {
         if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
+            NSWorkspace.shared.open(url)
+        }
+    }
+
+    /// Needed only to read the battery from the WhiteShark receiver (see `BatteryMonitor`).
+    static var isInputMonitoringGranted: Bool {
+        IOHIDCheckAccess(kIOHIDRequestTypeListenEvent) == kIOHIDAccessTypeGranted
+    }
+
+    /// Shows the system prompt the first time; after a denial it only adds the app to the list.
+    static func requestInputMonitoring() {
+        IOHIDRequestAccess(kIOHIDRequestTypeListenEvent)
+    }
+
+    static func openInputMonitoringSettings() {
+        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_ListenEvent") {
             NSWorkspace.shared.open(url)
         }
     }

@@ -1,6 +1,7 @@
 import AppKit
 import MouseCore
 import os
+import UserNotifications
 
 private let log = Logger(subsystem: "com.r1spekt1.SideClick", category: "app")
 
@@ -16,12 +17,17 @@ final class AppModel: ObservableObject {
     var isMouseConnected: Bool { !connectedMice.isEmpty }
     var mouseTitle: String { MouseSummary.title(for: connectedMice) }
     @Published private(set) var conflicts: [String] = []
+    @Published private(set) var battery: BatteryStatus?
+    /// The WhiteShark receiver is connected but its battery can't be read without Input Monitoring.
+    @Published private(set) var needsInputMonitoring = false
 
     private let store: SettingsStore
     private let buttons = ButtonController()
     private let scroll = ScrollController()
     private let device = DeviceMonitor()
     private let pointer = PointerController()
+    private let batteryMonitor = BatteryMonitor()
+    private var lowBatteryAlert = LowBatteryAlert()
     private var observers: [NSObjectProtocol] = []
     private var terminateSources: [DispatchSourceSignal] = []
     private var permissionTimer: Timer?
@@ -55,6 +61,8 @@ final class AppModel: ObservableObject {
             }
         }
         device.start()
+        batteryMonitor.onChange = { [weak self] in self?.batteryDidChange() }
+        batteryMonitor.start()
         observers.append(NotificationCenter.default.addObserver(
             forName: NSApplication.willTerminateNotification, object: nil, queue: .main) { [weak self] _ in
             MainActor.assumeIsolated { self?.pointer.restore() }
@@ -69,10 +77,13 @@ final class AppModel: ObservableObject {
         }
         observers.append(NSWorkspace.shared.notificationCenter.addObserver(
             forName: NSWorkspace.didWakeNotification, object: nil, queue: .main) { [weak self] _ in
-            MainActor.assumeIsolated { self?.applySettings() }
+            MainActor.assumeIsolated {
+                self?.applySettings()
+                self?.batteryMonitor.refresh()
+            }
         })
         if !isAccessibilityGranted { Permissions.requestAccessibility() }
-        watchAccessibility()
+        watchPermissions()
         applySettings()
         refreshConflicts()
         conflictTimer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { [weak self] _ in
@@ -85,11 +96,25 @@ final class AppModel: ObservableObject {
         Permissions.openAccessibilitySettings()
     }
 
-    /// Keeps polling for the whole run: a revoked permission must stop the HID taps,
-    /// which could otherwise stall scrolling and the side buttons.
-    private func watchAccessibility() {
+    /// Called when the menu opens, so it never shows a reading that is several seconds old.
+    func refreshBattery() {
+        batteryMonitor.refresh()
+    }
+
+    func requestInputMonitoring() {
+        Permissions.requestInputMonitoring()
+        Permissions.openInputMonitoringSettings()
+    }
+
+    /// Keeps polling for the whole run: a revoked Accessibility permission must stop the HID taps,
+    /// which could otherwise stall scrolling and the side buttons. Input Monitoring is polled so the
+    /// battery shows up as soon as it is granted.
+    private func watchPermissions() {
         permissionTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
-            MainActor.assumeIsolated { self?.accessibilityMayHaveChanged() }
+            MainActor.assumeIsolated {
+                self?.accessibilityMayHaveChanged()
+                self?.inputMonitoringMayHaveChanged()
+            }
         }
     }
 
@@ -104,6 +129,18 @@ final class AppModel: ObservableObject {
             buttons.stop()
             scroll.stop()
         }
+    }
+
+    private func inputMonitoringMayHaveChanged() {
+        guard needsInputMonitoring, Permissions.isInputMonitoringGranted else { return }
+        needsInputMonitoring = false
+        batteryMonitor.refresh()
+    }
+
+    private func batteryDidChange() {
+        battery = batteryMonitor.status
+        needsInputMonitoring = batteryMonitor.isReceiverConnected && !Permissions.isInputMonitoringGranted
+        if let battery, lowBatteryAlert.shouldWarn(for: battery) { Self.notifyLowBattery(battery) }
     }
 
     private func settingsDidChange(from old: AppSettings) {
@@ -128,6 +165,24 @@ final class AppModel: ObservableObject {
         scroll.update(settings: settings.scroll)
         if !buttons.start() { log.error("Could not create the side-button event tap") }
         if !scroll.start() { log.error("Could not create the scroll event tap") }
+    }
+
+    /// Asks for notification permission the first time it is needed. Notifications need a bundle,
+    /// so an unbundled run (`swift run`) only logs.
+    private static func notifyLowBattery(_ status: BatteryStatus) {
+        guard Bundle.main.bundleIdentifier != nil else {
+            log.info("Mouse battery low: \(status.percent)%")
+            return
+        }
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { granted, _ in
+            guard granted else { return }
+            let content = UNMutableNotificationContent()
+            content.title = "Mouse battery low"
+            content.body = "\(status.percent)% left. Charge the mouse soon."
+            content.sound = .default
+            let request = UNNotificationRequest(identifier: "low-battery", content: content, trigger: nil)
+            UNUserNotificationCenter.current().add(request)
+        }
     }
 
     private func refreshConflicts() {

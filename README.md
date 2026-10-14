@@ -21,7 +21,8 @@ Download the latest `.dmg` from [Releases](https://github.com/r1spekt1/SideClick
 open it, and drag `SideClick.app` onto the `Applications` shortcut.
 
 Requires macOS 14+ and Apple Silicon. The only permission needed is **Accessibility**; the app
-asks for it on first launch.
+asks for it on first launch. **Input Monitoring** is needed only for the battery level of a
+WhiteShark Maximus (see below); the app offers a button for it when that receiver is connected.
 
 > The app is ad-hoc signed and not notarized, so Gatekeeper blocks it on first launch. Either:
 >
@@ -45,6 +46,19 @@ SideClick is the new name of XiaomiMouseFix (0.1.0). It has a new bundle identif
 3. Turn "Launch at login" on again in SideClick → General if you used it.
 
 Your settings are copied over automatically on first launch.
+
+### Battery level (WhiteShark Maximus)
+
+With the WhiteShark Maximus (GM-9010) 2.4 GHz receiver connected, SideClick shows the mouse
+battery in the menu bar, in the menu and in Settings → General, and warns once when it drops to
+15 %. It sends the receiver the same status query as WhiteShark's Windows software, every 10
+seconds and when you open the menu, and no other command. On its charging cable the mouse shows
+as charging.
+
+macOS allows that query only with **Input Monitoring**, because the receiver's status report is
+on its keyboard interface. SideClick reads no keyboard input. While the mouse is off or asleep,
+the receiver reports the last level it knew. Other mice, and the Maximus over Bluetooth, show no
+battery level.
 
 ### Known limitations
 

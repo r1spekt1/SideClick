@@ -1,3 +1,4 @@
+import MouseCore
 import SwiftUI
 
 @main
@@ -8,7 +9,7 @@ struct SideClickApp: App {
         MenuBarExtra {
             MenuBarView(model: model)
         } label: {
-            MenuBarLabel()
+            MenuBarLabel(battery: model.battery)
         }
         .menuBarExtraStyle(.window)
 
@@ -19,8 +20,11 @@ struct SideClickApp: App {
     }
 }
 
-/// The bundled template image (macOS tints it for the menu bar), or the SF Symbol when run unbundled.
+/// The bundled template image (macOS tints it for the menu bar), or the SF Symbol when run unbundled,
+/// followed by the mouse battery when it is known.
 private struct MenuBarLabel: View {
+    let battery: BatteryStatus?
+
     private static let icon: NSImage? = {
         let image = Bundle.main.image(forResource: "MenuBarIcon")
         image?.isTemplate = true
@@ -34,7 +38,10 @@ private struct MenuBarLabel: View {
             } else {
                 Image(systemName: "computermouse")
             }
+            if let battery {
+                battery.isCharging ? Text(Image(systemName: "bolt.fill")) : Text(battery.title)
+            }
         }
-        .accessibilityLabel("SideClick")
+        .accessibilityLabel(battery.map { "SideClick, mouse battery \($0.title)" } ?? "SideClick")
     }
 }

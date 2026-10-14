@@ -34,3 +34,19 @@ extension SystemAction {
         }
     }
 }
+
+extension BatteryStatus {
+    /// While charging the mouse reports 100 %, so the level is not shown then.
+    var title: String { isCharging ? "Charging" : "\(percent)%" }
+
+    var symbolName: String {
+        if isCharging { return "battery.100percent.bolt" }
+        switch percent {
+        case 88...: return "battery.100percent"
+        case 63...: return "battery.75percent"
+        case 38...: return "battery.50percent"
+        case 13...: return "battery.25percent"
+        default: return "battery.0percent"
+        }
+    }
+}
