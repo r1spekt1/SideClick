@@ -28,7 +28,6 @@ public struct HIDDeviceInfo: Equatable, Sendable {
     public var isExternalMouse: Bool {
         primaryUsagePage == Self.genericDesktopPage
             && primaryUsage == Self.mouseUsage
-            && !isBuiltIn
             && !productName.localizedCaseInsensitiveContains("trackpad")
     }
 
