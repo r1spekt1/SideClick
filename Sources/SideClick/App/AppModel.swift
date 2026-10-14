@@ -13,13 +13,17 @@ final class AppModel: ObservableObject {
     }
     @Published private(set) var isAccessibilityGranted = Permissions.isAccessibilityGranted
     @Published private(set) var pressedButtons: Set<SideButton> = []
-    @Published private(set) var connectedMice: [String] = []
+    @Published private(set) var connectedMice: [ConnectedMouse] = []
     var isMouseConnected: Bool { !connectedMice.isEmpty }
-    var mouseTitle: String { MouseSummary.title(for: connectedMice) }
+    var mouseTitle: String { MouseSummary.title(for: connectedMice.map(\.name)) }
+    /// Only Low Energy mice: Classic ones have no Battery Service, so asking for Bluetooth can't help them.
+    private var bluetoothMouseNames: [String] { connectedMice.filter { $0.connection == .bluetoothLE }.map(\.name) }
     @Published private(set) var conflicts: [String] = []
     @Published private(set) var battery: BatteryStatus?
     /// The WhiteShark receiver is connected but its battery can't be read without Input Monitoring.
     @Published private(set) var needsInputMonitoring = false
+    /// A Bluetooth mouse is connected but the Bluetooth permission was denied.
+    @Published private(set) var needsBluetooth = false
 
     private let store: SettingsStore
     private let buttons = ButtonController()
@@ -27,6 +31,7 @@ final class AppModel: ObservableObject {
     private let device = DeviceMonitor()
     private let pointer = PointerController()
     private let batteryMonitor = BatteryMonitor()
+    private let bluetoothBattery = BluetoothBatteryMonitor()
     private var lowBatteryAlert = LowBatteryAlert()
     private var observers: [NSObjectProtocol] = []
     private var terminateSources: [DispatchSourceSignal] = []
@@ -45,10 +50,12 @@ final class AppModel: ObservableObject {
         buttons.onButtonActivity = { [weak self] button, isDown in
             if isDown { self?.pressedButtons.insert(button) } else { self?.pressedButtons.remove(button) }
         }
-        device.onChange = { [weak self] names in
+        device.onChange = { [weak self] mice in
             guard let self else { return }
-            self.connectedMice = names
-            if names.isEmpty {
+            self.connectedMice = mice
+            self.bluetoothBattery.update(mouseNames: self.bluetoothMouseNames)
+            self.batteryDidChange()
+            if mice.isEmpty {
                 self.pointer.deviceDisconnected()
             } else {
                 self.applySettings()
@@ -62,6 +69,7 @@ final class AppModel: ObservableObject {
         }
         device.start()
         batteryMonitor.onChange = { [weak self] in self?.batteryDidChange() }
+        bluetoothBattery.onChange = { [weak self] in self?.batteryDidChange() }
         batteryMonitor.start()
         observers.append(NotificationCenter.default.addObserver(
             forName: NSApplication.willTerminateNotification, object: nil, queue: .main) { [weak self] _ in
@@ -101,6 +109,10 @@ final class AppModel: ObservableObject {
         batteryMonitor.refresh()
     }
 
+    func openBluetoothSettings() {
+        Permissions.openBluetoothSettings()
+    }
+
     func requestInputMonitoring() {
         Permissions.requestInputMonitoring()
         Permissions.openInputMonitoringSettings()
@@ -138,8 +150,9 @@ final class AppModel: ObservableObject {
     }
 
     private func batteryDidChange() {
-        battery = batteryMonitor.status
+        battery = BluetoothBattery.preferred(receiver: batteryMonitor.status, bluetooth: bluetoothBattery.status)
         needsInputMonitoring = batteryMonitor.isReceiverConnected && !Permissions.isInputMonitoringGranted
+        needsBluetooth = !bluetoothMouseNames.isEmpty && bluetoothBattery.isDenied
         if let battery, lowBatteryAlert.shouldWarn(for: battery) { Self.notifyLowBattery(battery) }
     }
 

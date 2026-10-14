@@ -6,13 +6,14 @@ import MouseCore
 /// so no Input Monitoring permission is needed.
 @MainActor
 final class DeviceMonitor {
-    /// Called with the sorted product names of the connected external mice whenever that list changes.
-    var onChange: (([String]) -> Void)?
-    private(set) var mouseNames: [String] = []
+    /// Called with the connected external mice, sorted by name and then by the link in use,
+    /// whenever that list changes.
+    var onChange: (([ConnectedMouse]) -> Void)?
+    private(set) var mice: [ConnectedMouse] = []
 
     private let manager = IOHIDManagerCreate(kCFAllocatorDefault, IOOptionBits(kIOHIDOptionsTypeNone))
     /// The same IOHIDDevice object is passed to the match and the removal callback.
-    private var devices: [ObjectIdentifier: String] = [:]
+    private var devices: [ObjectIdentifier: ConnectedMouse] = [:]
 
     func start() {
         IOHIDManagerSetDeviceMatching(manager, [kIOHIDPrimaryUsagePageKey: HIDDeviceInfo.genericDesktopPage,
@@ -34,7 +35,7 @@ final class DeviceMonitor {
     private func deviceAdded(_ device: IOHIDDevice) {
         let info = HIDDeviceInfo(device: device)
         guard info.isExternalMouse else { return }
-        devices[ObjectIdentifier(device)] = info.productName
+        devices[ObjectIdentifier(device)] = ConnectedMouse(name: info.productName, connection: info.connection)
         publish()
     }
 
@@ -44,9 +45,9 @@ final class DeviceMonitor {
     }
 
     private func publish() {
-        let names = devices.values.sorted()
-        guard names != mouseNames else { return }
-        mouseNames = names
-        onChange?(names)
+        let sorted = ConnectedMouse.sorted(devices.values)
+        guard sorted != mice else { return }
+        mice = sorted
+        onChange?(sorted)
     }
 }

@@ -27,6 +27,13 @@ enum Permissions {
         IOHIDRequestAccess(kIOHIDRequestTypeListenEvent)
     }
 
+    /// Needed only to read the battery of Bluetooth mice (see `BluetoothBatteryMonitor`).
+    static func openBluetoothSettings() {
+        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Bluetooth") {
+            NSWorkspace.shared.open(url)
+        }
+    }
+
     static func openInputMonitoringSettings() {
         if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_ListenEvent") {
             NSWorkspace.shared.open(url)

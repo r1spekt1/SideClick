@@ -50,3 +50,22 @@ extension BatteryStatus {
         }
     }
 }
+
+extension MouseConnection {
+    var title: String {
+        switch self {
+        case .receiver: "2.4 GHz"
+        case .bluetooth, .bluetoothLE: "Bluetooth"
+        case .wired: "Wired"
+        case .usb: "USB"
+        }
+    }
+}
+
+extension ConnectedMouse {
+    /// The name, plus the connection when it is known, e.g. "MAXIMUS (Bluetooth)".
+    var title: String {
+        let name = name.isEmpty ? "Mouse" : name
+        return connection.map { "\(name) (\($0.title))" } ?? name
+    }
+}

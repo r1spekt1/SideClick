@@ -21,8 +21,9 @@ Download the latest `.dmg` from [Releases](https://github.com/r1spekt1/SideClick
 open it, and drag `SideClick.app` onto the `Applications` shortcut.
 
 Requires macOS 14+ and Apple Silicon. The only permission needed is **Accessibility**; the app
-asks for it on first launch. **Input Monitoring** is needed only for the battery level of a
-WhiteShark Maximus (see below); the app offers a button for it when that receiver is connected.
+asks for it on first launch. Two more are needed only for the battery level (see below):
+**Bluetooth**, asked for when a Bluetooth Low Energy mouse connects, and **Input Monitoring**,
+offered as a button when a WhiteShark Maximus receiver is connected.
 
 > The app is ad-hoc signed and not notarized, so Gatekeeper blocks it on first launch. Either:
 >
@@ -47,18 +48,28 @@ SideClick is the new name of XiaomiMouseFix (0.1.0). It has a new bundle identif
 
 Your settings are copied over automatically on first launch.
 
-### Battery level (WhiteShark Maximus)
+### Connection and battery level
 
-With the WhiteShark Maximus (GM-9010) 2.4 GHz receiver connected, SideClick shows the mouse
-battery in the menu bar, in the menu and in Settings → General, and warns once when it drops to
-15 %. It sends the receiver the same status query as WhiteShark's Windows software, every 10
-seconds and when you open the menu, and no other command. On its charging cable the mouse shows
-as charging.
+The menu and Settings → General show how each mouse is connected: **Bluetooth**, **USB**, or
+for a WhiteShark Maximus **2.4 GHz** (its receiver) and **Wired** (its cable). For other USB mice
+a receiver and a cable look the same to macOS, so they show as USB.
 
-macOS allows that query only with **Input Monitoring**, because the receiver's status report is
-on its keyboard interface. SideClick reads no keyboard input. While the mouse is off or asleep,
-the receiver reports the last level it knew. Other mice, and the Maximus over Bluetooth, show no
-battery level.
+SideClick shows the battery in the menu bar, in the menu and in Settings → General, and warns
+once when it drops to 15 %:
+
+- **Bluetooth Low Energy mice** that offer the standard Battery Service. The mouse reports
+  changes itself. This needs the **Bluetooth** permission. Classic Bluetooth mice have no such
+  service, so their battery isn't shown and the permission isn't asked for. While a Bluetooth
+  reading is available it is shown instead of the receiver's, since the receiver only knows the
+  level from the mouse's last 2.4 GHz session.
+- **WhiteShark Maximus (GM-9010) on its 2.4 GHz receiver.** SideClick sends the receiver the same
+  status query as WhiteShark's Windows software, every 2 seconds and when you open the menu, and
+  no other command. The receiver answers from its own cache, so this costs the mouse no battery.
+  macOS allows the query only with **Input Monitoring**, because the receiver's status report is
+  on its keyboard interface. SideClick reads no keyboard input. While the mouse is off or asleep,
+  the receiver reports the last level it knew. On its charging cable the mouse shows as charging.
+
+Other mice on a USB receiver show no battery level: each vendor uses its own protocol.
 
 ### Known limitations
 

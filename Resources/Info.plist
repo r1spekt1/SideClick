@@ -22,6 +22,8 @@
     <string>14.0</string>
     <key>LSUIElement</key>
     <true/>
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>SideClick reads the battery level of your Bluetooth mouse.</string>
     <key>NSHighResolutionCapable</key>
     <true/>
 </dict>

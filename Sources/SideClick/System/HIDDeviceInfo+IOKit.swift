@@ -12,7 +12,8 @@ extension HIDDeviceInfo {
                   productName: property(kIOHIDProductKey) as? String ?? "",
                   primaryUsagePage: int(kIOHIDPrimaryUsagePageKey),
                   primaryUsage: int(kIOHIDPrimaryUsageKey),
-                  isBuiltIn: int("Built-In") == 1)
+                  isBuiltIn: int("Built-In") == 1,
+                  transport: property(kIOHIDTransportKey) as? String ?? "")
     }
 
     init(device: IOHIDDevice) {
