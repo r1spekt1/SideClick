@@ -159,6 +159,7 @@ final class BatteryMonitor {
     private func deviceAdded(_ device: IOHIDDevice) {
         if HIDDeviceInfo(device: device).productID == WhiteSharkReceiver.wiredMouseProductID {
             wiredMouse = device
+            pendingSequence = nil
             publish(Self.charging)
         } else {
             receiver = device
