@@ -21,6 +21,9 @@ final class BatteryMonitor {
     private static let pollInterval: TimeInterval = 10
     /// The vendor software waits about 15 ms between the query and reading the reply.
     private static let replyDelay: TimeInterval = 0.05
+    /// The HID calls are asynchronous with a timeout (in milliseconds, per IOHIDDevice.h), because
+    /// the side-button and scroll event taps share the main run loop and must never wait on USB.
+    private static let timeoutMilliseconds: CFTimeInterval = 500
     private static let charging = BatteryStatus(percent: 100, isCharging: true)
 
     private let log = Logger(subsystem: "com.r1spekt1.SideClick", category: "battery")
@@ -29,9 +32,12 @@ final class BatteryMonitor {
         didSet {
             isReceiverConnected = receiver != nil
             isReceiverOpen = false
+            pendingSequence = nil
         }
     }
     private var isReceiverOpen = false
+    /// The query in flight; refreshes are skipped meanwhile so replies never cross.
+    private var pendingSequence: UInt8?
     private var wiredMouse: IOHIDDevice?
     private var sequence: UInt8 = 0
     private var timer: Timer?
@@ -62,22 +68,29 @@ final class BatteryMonitor {
         }
     }
 
-    /// Queries the receiver now, and publishes the reply shortly after.
+    /// Queries the receiver now, unless a query is already in flight, and publishes the reply.
     func refresh() {
-        guard wiredMouse == nil, let receiver, Permissions.isInputMonitoringGranted, openReceiver(receiver)
-        else { return }
-        sequence &+= 1
-        let sequence = sequence
-        let request = WhiteSharkReceiver.statusRequest(sequence: sequence)
-        let result = IOHIDDeviceSetReport(receiver, kIOHIDReportTypeFeature, CFIndex(WhiteSharkReceiver.reportID),
-                                          request, request.count)
-        guard result == kIOReturnSuccess else {
-            log.error("Battery query failed: \(String(format: "0x%08x", result), privacy: .public)")
+        guard wiredMouse == nil, let receiver, pendingSequence == nil else { return }
+        guard Permissions.isInputMonitoringGranted, openReceiver(receiver) else {
+            // Clears an old level, and lets AppModel bring back the Grant button.
             publish(nil)
             return
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + Self.replyDelay) { [weak self] in
-            MainActor.assumeIsolated { self?.readReply(from: receiver, sequence: sequence) }
+        sequence &+= 1
+        let query = Query(device: receiver, sequence: sequence, monitor: self)
+        query.buffer.update(from: WhiteSharkReceiver.statusRequest(sequence: sequence),
+                            count: WhiteSharkReceiver.reportLength)
+        pendingSequence = sequence
+        let context = Unmanaged.passRetained(query).toOpaque()
+        let result = IOHIDDeviceSetReportWithCallback(
+            receiver, kIOHIDReportTypeFeature, CFIndex(WhiteSharkReceiver.reportID), query.buffer,
+            WhiteSharkReceiver.reportLength, Self.timeoutMilliseconds, { context, result, _, _, _, _, _ in
+                let query = Unmanaged<Query>.fromOpaque(context!).takeRetainedValue()
+                MainActor.assumeIsolated { query.monitor?.querySent(query, result: result) }
+            }, context)
+        if result != kIOReturnSuccess {
+            Unmanaged<Query>.fromOpaque(context).release()
+            fail(query, "Battery query", result)
         }
     }
 
@@ -92,24 +105,55 @@ final class BatteryMonitor {
         return true
     }
 
-    private func readReply(from device: IOHIDDevice, sequence: UInt8) {
-        guard device === receiver, wiredMouse == nil else { return }
-        var reply = [UInt8](repeating: 0, count: WhiteSharkReceiver.reportLength)
-        var length = reply.count
-        let result = IOHIDDeviceGetReport(device, kIOHIDReportTypeFeature, CFIndex(WhiteSharkReceiver.reportID),
-                                          &reply, &length)
-        guard result == kIOReturnSuccess else {
-            log.error("Reading the battery reply failed: \(String(format: "0x%08x", result), privacy: .public)")
-            publish(nil)
-            return
+    private func querySent(_ query: Query, result: IOReturn) {
+        guard isCurrent(query) else { return }
+        guard result == kIOReturnSuccess else { return fail(query, "Battery query", result) }
+        DispatchQueue.main.asyncAfter(deadline: .now() + Self.replyDelay) { [weak self] in
+            MainActor.assumeIsolated { self?.readReply(query) }
         }
-        let bytes = Array(reply.prefix(length))
-        let battery = WhiteSharkReceiver.battery(fromReply: bytes, sequence: sequence)
+    }
+
+    private func readReply(_ query: Query) {
+        guard isCurrent(query) else { return }
+        query.length.pointee = WhiteSharkReceiver.reportLength
+        let context = Unmanaged.passRetained(query).toOpaque()
+        let result = IOHIDDeviceGetReportWithCallback(
+            query.device, kIOHIDReportTypeFeature, CFIndex(WhiteSharkReceiver.reportID), query.buffer, query.length,
+            Self.timeoutMilliseconds, { context, result, _, _, _, _, _ in
+                let query = Unmanaged<Query>.fromOpaque(context!).takeRetainedValue()
+                MainActor.assumeIsolated { query.monitor?.replyReceived(query, result: result) }
+            }, context)
+        if result != kIOReturnSuccess {
+            Unmanaged<Query>.fromOpaque(context).release()
+            fail(query, "Reading the battery reply", result)
+        }
+    }
+
+    private func replyReceived(_ query: Query, result: IOReturn) {
+        guard isCurrent(query) else { return }
+        guard result == kIOReturnSuccess else { return fail(query, "Reading the battery reply", result) }
+        pendingSequence = nil
+        let bytes = Array(UnsafeBufferPointer(start: query.buffer, count: max(0, query.length.pointee)))
+        // A reply to an earlier query is stale, not a failure: keep the level shown.
+        if bytes.count > 4, bytes[4] != query.sequence { return }
+        let battery = WhiteSharkReceiver.battery(fromReply: bytes, sequence: query.sequence)
         if battery == nil {
             let hex = bytes.map { String(format: "%02x", $0) }.joined(separator: " ")
-            log.error("Unrecognized battery reply to query \(sequence, privacy: .public): \(hex, privacy: .public)")
+            log.error("Unrecognized battery reply to query \(query.sequence, privacy: .public): \(hex, privacy: .public)")
         }
         publish(battery)
+    }
+
+    /// False once the query was abandoned: the receiver went away or the wired mouse took over.
+    private func isCurrent(_ query: Query) -> Bool {
+        pendingSequence == query.sequence && query.device === receiver && wiredMouse == nil
+    }
+
+    private func fail(_ query: Query, _ step: String, _ result: IOReturn) {
+        guard pendingSequence == query.sequence else { return }
+        pendingSequence = nil
+        log.error("\(step, privacy: .public) failed: \(String(format: "0x%08x", result), privacy: .public)")
+        publish(nil)
     }
 
     private func deviceAdded(_ device: IOHIDDevice) {
@@ -139,5 +183,28 @@ final class BatteryMonitor {
         guard newStatus != status else { return }
         status = newStatus
         onChange?()
+    }
+}
+
+/// One status query in flight. The HID calls write into its buffers asynchronously, so each call
+/// retains it as the callback context until its callback runs.
+private final class Query {
+    let device: IOHIDDevice
+    let sequence: UInt8
+    weak var monitor: BatteryMonitor?
+    let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: WhiteSharkReceiver.reportLength)
+    let length = UnsafeMutablePointer<CFIndex>.allocate(capacity: 1)
+
+    init(device: IOHIDDevice, sequence: UInt8, monitor: BatteryMonitor) {
+        self.device = device
+        self.sequence = sequence
+        self.monitor = monitor
+        buffer.initialize(repeating: 0, count: WhiteSharkReceiver.reportLength)
+        length.initialize(to: WhiteSharkReceiver.reportLength)
+    }
+
+    deinit {
+        buffer.deallocate()
+        length.deallocate()
     }
 }
