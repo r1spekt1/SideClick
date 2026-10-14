@@ -34,6 +34,17 @@ private func info(vendor: Int = 10007, product: Int = 20499, transport: String) 
         #expect(info(transport: "").connection == nil)
         #expect(info(transport: "Virtual").connection == nil)
     }
+
+    /// A receiver still lists its mouse while that mouse is on Bluetooth; the menu shows `first`.
+    @Test func liveLinkSortsBeforeTheReceiverWithTheSameName() {
+        let receiver = ConnectedMouse(name: "MAXIMUS", connection: .receiver)
+        let bluetooth = ConnectedMouse(name: "MAXIMUS", connection: .bluetoothLE)
+        let wired = ConnectedMouse(name: "MAXIMUS", connection: .wired)
+        let other = ConnectedMouse(name: "Alpha", connection: .usb)
+        let expected = [other, wired, bluetooth, receiver]
+        #expect(ConnectedMouse.sorted([receiver, bluetooth, other, wired]) == expected)
+        #expect(ConnectedMouse.sorted([wired, other, bluetooth, receiver]) == expected)
+    }
 }
 
 @Suite struct BluetoothBatteryTests {

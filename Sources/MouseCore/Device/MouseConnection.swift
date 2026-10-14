@@ -20,4 +20,22 @@ public struct ConnectedMouse: Equatable, Sendable {
         self.name = name
         self.connection = connection
     }
+
+    /// Sorted by name. Equal names are sorted by connection, the link in use first: a receiver
+    /// still lists its mouse while that mouse is on Bluetooth or its cable. Every connection has
+    /// its own rank, so the order never depends on the input order.
+    public static func sorted(_ mice: some Sequence<ConnectedMouse>) -> [ConnectedMouse] {
+        mice.sorted { ($0.name, $0.rank) < ($1.name, $1.rank) }
+    }
+
+    private var rank: Int {
+        switch connection {
+        case .wired: 0
+        case .bluetoothLE: 1
+        case .bluetooth: 2
+        case .receiver: 3
+        case .usb: 4
+        case nil: 5
+        }
+    }
 }

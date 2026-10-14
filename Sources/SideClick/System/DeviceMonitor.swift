@@ -6,7 +6,8 @@ import MouseCore
 /// so no Input Monitoring permission is needed.
 @MainActor
 final class DeviceMonitor {
-    /// Called with the connected external mice, sorted by name, whenever that list changes.
+    /// Called with the connected external mice, sorted by name and then by the link in use,
+    /// whenever that list changes.
     var onChange: (([ConnectedMouse]) -> Void)?
     private(set) var mice: [ConnectedMouse] = []
 
@@ -44,7 +45,7 @@ final class DeviceMonitor {
     }
 
     private func publish() {
-        let sorted = devices.values.sorted { $0.name < $1.name }
+        let sorted = ConnectedMouse.sorted(devices.values)
         guard sorted != mice else { return }
         mice = sorted
         onChange?(sorted)
