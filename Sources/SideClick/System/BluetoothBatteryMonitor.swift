@@ -72,8 +72,8 @@ final class BluetoothBatteryMonitor: NSObject {
         DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak self] in
             MainActor.assumeIsolated {
                 guard let self else { return }
-                isRetryScheduled = false
-                if let central { connectToMouse(central) }
+                self.isRetryScheduled = false
+                if let central = self.central { self.connectToMouse(central) }
             }
         }
     }

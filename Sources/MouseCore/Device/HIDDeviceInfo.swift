@@ -38,7 +38,8 @@ public struct HIDDeviceInfo: Equatable, Sendable {
     /// How the mouse is connected, or nil for an unknown transport (e.g. a virtual device).
     /// A USB receiver and a USB cable look the same, so only known models get `.receiver`/`.wired`.
     public var connection: MouseConnection? {
-        if transport == "Bluetooth Low Energy" { return .bluetoothLE }
+        // macOS 27 reports "Bluetooth Low Energy"; IOHIDKeys.h spells it "BluetoothLowEnergy".
+        if ["Bluetooth Low Energy", "BluetoothLowEnergy"].contains(transport) { return .bluetoothLE }
         if transport.hasPrefix("Bluetooth") { return .bluetooth }
         guard transport == "USB" else { return nil }
         guard vendorID == WhiteSharkReceiver.vendorID else { return .usb }

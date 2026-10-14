@@ -12,6 +12,11 @@ private func info(vendor: Int = 10007, product: Int = 20499, transport: String) 
         #expect(info(transport: "Bluetooth Low Energy").connection == .bluetoothLE)
     }
 
+    /// What macOS 27 reports for a Bluetooth LE mouse differs from the spelling in IOHIDKeys.h.
+    @Test func bothLowEnergySpellingsAreLowEnergy() {
+        #expect(info(transport: "BluetoothLowEnergy").connection == .bluetoothLE)
+    }
+
     @Test func whiteSharkReceiverIs24GHz() {
         #expect(info(vendor: 0x248A, product: 0x5B2F, transport: "USB").connection == .receiver)
     }
