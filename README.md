@@ -22,8 +22,8 @@ open it, and drag `SideClick.app` onto the `Applications` shortcut.
 
 Requires macOS 14+ and Apple Silicon. The only permission needed is **Accessibility**; the app
 asks for it on first launch. Two more are needed only for the battery level (see below):
-**Bluetooth**, asked for when a Bluetooth mouse connects, and **Input Monitoring**, offered as a
-button when a WhiteShark Maximus receiver is connected.
+**Bluetooth**, asked for when a Bluetooth Low Energy mouse connects, and **Input Monitoring**,
+offered as a button when a WhiteShark Maximus receiver is connected.
 
 > The app is ad-hoc signed and not notarized, so Gatekeeper blocks it on first launch. Either:
 >
@@ -57,8 +57,11 @@ a receiver and a cable look the same to macOS, so they show as USB.
 SideClick shows the battery in the menu bar, in the menu and in Settings → General, and warns
 once when it drops to 15 %:
 
-- **Bluetooth mice** that offer the standard Battery Service. The mouse reports changes itself.
-  This needs the **Bluetooth** permission.
+- **Bluetooth Low Energy mice** that offer the standard Battery Service. The mouse reports
+  changes itself. This needs the **Bluetooth** permission. Classic Bluetooth mice have no such
+  service, so their battery isn't shown and the permission isn't asked for. While a Bluetooth
+  reading is available it is shown instead of the receiver's, since the receiver only knows the
+  level from the mouse's last 2.4 GHz session.
 - **WhiteShark Maximus (GM-9010) on its 2.4 GHz receiver.** SideClick sends the receiver the same
   status query as WhiteShark's Windows software, every 2 seconds and when you open the menu, and
   no other command. The receiver answers from its own cache, so this costs the mouse no battery.

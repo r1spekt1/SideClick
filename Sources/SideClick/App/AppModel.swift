@@ -16,7 +16,8 @@ final class AppModel: ObservableObject {
     @Published private(set) var connectedMice: [ConnectedMouse] = []
     var isMouseConnected: Bool { !connectedMice.isEmpty }
     var mouseTitle: String { MouseSummary.title(for: connectedMice.map(\.name)) }
-    private var bluetoothMouseNames: [String] { connectedMice.filter { $0.connection == .bluetooth }.map(\.name) }
+    /// Only Low Energy mice: Classic ones have no Battery Service, so asking for Bluetooth can't help them.
+    private var bluetoothMouseNames: [String] { connectedMice.filter { $0.connection == .bluetoothLE }.map(\.name) }
     @Published private(set) var conflicts: [String] = []
     @Published private(set) var battery: BatteryStatus?
     /// The WhiteShark receiver is connected but its battery can't be read without Input Monitoring.
@@ -148,9 +149,8 @@ final class AppModel: ObservableObject {
         batteryMonitor.refresh()
     }
 
-    /// The receiver's reading wins; otherwise the Bluetooth mouse's.
     private func batteryDidChange() {
-        battery = batteryMonitor.status ?? bluetoothBattery.status
+        battery = BluetoothBattery.preferred(receiver: batteryMonitor.status, bluetooth: bluetoothBattery.status)
         needsInputMonitoring = batteryMonitor.isReceiverConnected && !Permissions.isInputMonitoringGranted
         needsBluetooth = !bluetoothMouseNames.isEmpty && bluetoothBattery.isDenied
         if let battery, lowBatteryAlert.shouldWarn(for: battery) { Self.notifyLowBattery(battery) }

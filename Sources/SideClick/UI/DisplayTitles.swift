@@ -55,7 +55,7 @@ extension MouseConnection {
     var title: String {
         switch self {
         case .receiver: "2.4 GHz"
-        case .bluetooth: "Bluetooth"
+        case .bluetooth, .bluetoothLE: "Bluetooth"
         case .wired: "Wired"
         case .usb: "USB"
         }

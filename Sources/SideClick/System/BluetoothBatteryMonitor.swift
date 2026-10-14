@@ -6,8 +6,8 @@ import os
 private let batteryService = CBUUID(string: BluetoothBattery.serviceUUID)
 private let batteryLevel = CBUUID(string: BluetoothBattery.levelUUID)
 
-/// Reads the battery of a connected Bluetooth mouse through the standard Battery Service and
-/// follows its notifications, so there is no polling. Only peripherals named like a connected
+/// Reads the battery of a connected Bluetooth Low Energy mouse through the standard Battery
+/// Service and follows its notifications, so there is no polling. Only peripherals named like a connected
 /// Bluetooth mouse are used, never headphones or keyboards. CoreBluetooth is started only once
 /// such a mouse appears, so people without one never see the Bluetooth permission prompt.
 @MainActor
@@ -21,6 +21,7 @@ final class BluetoothBatteryMonitor: NSObject {
     private var central: CBCentralManager?
     private var mouseNames: Set<String> = []
     private var peripheral: CBPeripheral?
+    private var isRetryScheduled = false
 
     /// Call with the names of the connected Bluetooth mice whenever that list changes.
     func update(mouseNames names: [String]) {
@@ -39,7 +40,10 @@ final class BluetoothBatteryMonitor: NSObject {
         guard central.state == .poweredOn, peripheral == nil else { return }
         let match = central.retrieveConnectedPeripherals(withServices: [batteryService])
             .first { mouseNames.contains($0.name ?? "") }
-        guard let match else { return }
+        guard let match else {
+            scheduleRetry()
+            return
+        }
         peripheral = match
         match.delegate = self
         central.connect(match)
@@ -56,6 +60,22 @@ final class BluetoothBatteryMonitor: NSObject {
         guard lostPeripheral === peripheral else { return }
         peripheral = nil
         publish(nil)
+        scheduleRetry()
+    }
+
+    /// Looks again later while a Bluetooth mouse is still connected: CoreBluetooth can list the
+    /// peripheral only after the HID device appears, and this app's own link can drop while the
+    /// system keeps the mouse connected. Neither changes the HID list, so nothing else would retry.
+    private func scheduleRetry() {
+        guard !isRetryScheduled, !mouseNames.isEmpty else { return }
+        isRetryScheduled = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak self] in
+            MainActor.assumeIsolated {
+                guard let self else { return }
+                isRetryScheduled = false
+                if let central { connectToMouse(central) }
+            }
+        }
     }
 
     private func publish(_ newStatus: BatteryStatus?) {
@@ -111,8 +131,14 @@ extension BluetoothBatteryMonitor: CBPeripheralDelegate {
     nonisolated func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic,
                                 error: Error?) {
         let value = characteristic.value.map { [UInt8]($0) } ?? []
+        let failure = error?.localizedDescription
         MainActor.assumeIsolated {
             guard peripheral === self.peripheral else { return }
+            // A failed read carries no new level, so the shown one stays.
+            if let failure {
+                log.error("Reading the Bluetooth battery level failed: \(failure, privacy: .public)")
+                return
+            }
             let battery = BluetoothBattery.status(fromLevel: value)
             if battery == nil {
                 log.error("Unrecognized Bluetooth battery level: \(value, privacy: .public)")
