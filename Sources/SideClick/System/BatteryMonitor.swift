@@ -3,7 +3,7 @@ import IOKit.hid
 import MouseCore
 import os
 
-/// Reads the battery of a WhiteShark Maximus through its 2.4 GHz receiver, every few seconds and on
+/// Reads the battery of a WhiteShark Maximus through its 2.4 GHz receiver, every 2 seconds and on
 /// demand. Sends only the receiver's status query (see `WhiteSharkReceiver`). The query needs the
 /// receiver's keyboard interface open (shared, not seized), which macOS allows only with the
 /// Input Monitoring permission.
@@ -18,7 +18,10 @@ final class BatteryMonitor {
     private(set) var status: BatteryStatus?
     private(set) var isReceiverConnected = false
 
-    private static let pollInterval: TimeInterval = 10
+    /// Short, because the receiver answers from its own cache (it answers even with the mouse off),
+    /// so a query costs the mouse no battery, and a level that changed after the cable comes out
+    /// shows up within seconds.
+    private static let pollInterval: TimeInterval = 2
     /// The vendor software waits about 15 ms between the query and reading the reply.
     private static let replyDelay: TimeInterval = 0.05
     /// The HID calls are asynchronous with a timeout (in milliseconds, per IOHIDDevice.h), because

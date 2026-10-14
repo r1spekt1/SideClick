@@ -13,7 +13,7 @@ struct MenuBarView: View {
                 Circle()
                     .fill(model.isMouseConnected ? Color.green : Color.secondary)
                     .frame(width: 8, height: 8)
-                Text(model.isMouseConnected ? "Connected" : "Not connected")
+                Text(model.connectedMice.first.map { $0.connection?.title ?? "Connected" } ?? "Not connected")
                     .font(.caption).foregroundStyle(.secondary)
             }
             if let battery = model.battery {
@@ -22,6 +22,9 @@ struct MenuBarView: View {
             }
             if model.needsInputMonitoring {
                 Button("Grant Input Monitoring to show the battery…") { model.requestInputMonitoring() }
+            }
+            if model.needsBluetooth {
+                Button("Grant Bluetooth to show the battery…") { model.openBluetoothSettings() }
             }
             if !model.isAccessibilityGranted {
                 Button("Grant Accessibility access…") { model.requestAccessibility() }
