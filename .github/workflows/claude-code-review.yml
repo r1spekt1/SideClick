@@ -1,0 +1,55 @@
+name: Claude Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review, reopened]
+
+concurrency:
+  group: claude-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    # Fork PRs get no secrets on a public repo, and drafts are not ready for review.
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      !github.event.pull_request.draft
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      pull-requests: write
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Review the pull request
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          track_progress: true
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
+
+            Review this pull request. SideClick is a macOS 14+ menu bar app written in Swift
+            (Swift Package: the MouseCore library, the SideClick executable, MouseCoreTests).
+            It works with CGEvent taps, IOKit HID and the Accessibility permission.
+
+            Focus on:
+            - Correctness bugs and edge cases, especially in event tap and HID handling
+            - Threading, run loop and memory/retain issues around C APIs
+            - Behaviour changes not covered by MouseCoreTests
+            - Needless complexity; prefer the simplest change that works
+
+            Read the diff with `gh pr diff` and the PR description with `gh pr view`.
+            Put each specific issue in an inline comment on the relevant line.
+            Post one short top-level summary with `gh pr comment`.
+            Skip praise and style nitpicks; report only issues worth acting on.
+          claude_args: |
+            --model claude-opus-5-5
+            --max-turns 30
+            --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"
