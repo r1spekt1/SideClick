@@ -29,6 +29,15 @@ struct GeneralPane: View {
             Section("Status") {
                 LabeledContent("Mouse", value: model.isMouseConnected
                     ? model.connectedMice.map { $0.isEmpty ? "Mouse" : $0 }.joined(separator: ", ") : "Not connected")
+                LabeledContent("Battery") {
+                    if let battery = model.battery {
+                        Text(battery.title)
+                    } else if model.needsInputMonitoring {
+                        Button("Grant Input Monitoring…") { model.requestInputMonitoring() }
+                    } else {
+                        Text("Unknown")
+                    }
+                }
                 LabeledContent("Accessibility") {
                     if model.isAccessibilityGranted {
                         Text("Granted")
