@@ -132,10 +132,11 @@ briefly stall scrolling and the side buttons.
 ## Release signing
 
 Only needed to publish a release. `scripts/make-dmg.sh` signs with a self-signed certificate
-named `SideClick` and stops if it is missing. macOS ties the permissions users grant to this
-certificate, so every release must be signed with the same one: a new certificate makes every
-user grant the permissions again. It does not get past Gatekeeper; that needs a paid Apple
-Developer ID and notarization.
+named `SideClick`, pinned by its SHA-1 in `RELEASE_CERT_SHA1`, and stops if it is missing.
+macOS ties the permissions users grant to this certificate's hash, so every release must be
+signed with the same one: a new certificate, even with the same name, makes every user grant
+the permissions again. The pinned hash makes the script refuse such a certificate. It does not
+get past Gatekeeper; that needs a paid Apple Developer ID and notarization.
 
 To create it:
 
@@ -147,6 +148,13 @@ To create it:
 4. Back it up: in Keychain Access → **My Certificates**, right-click `SideClick` →
    **Export…**, save it as `.p12` with a password, and keep the file outside the repo. Without
    this backup a lost Mac means a new certificate.
+5. Pin it: run `security find-identity -p codesigning`, copy the 40-character hash in front of
+   `"SideClick"` into `RELEASE_CERT_SHA1` in `scripts/make-dmg.sh`, and commit it. The hash is
+   not secret: it is in every shipped app's designated requirement (`codesign -d -r- SideClick.app`
+   shows it as `certificate leaf = H"…"`).
+
+On another Mac, import the `.p12` backup instead of creating a new certificate. To sign with a
+different identity (for a test build), set `SIGN_IDENTITY` to its name or SHA-1.
 
 ## Icons
 
