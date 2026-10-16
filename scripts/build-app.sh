@@ -23,9 +23,12 @@ cp Resources/AppIcon.icns Resources/MenuBarIcon.png Resources/MenuBarIcon@2x.png
 
 # Captured first: under pipefail an early-exiting grep -q could SIGPIPE security.
 IDENTITIES="$(security find-identity -p codesigning)"
+# A SHA-1 identity (as make-dmg.sh passes) is matched as is (upper case, like find-identity
+# prints it), a name only in quotes so "SideClick" doesn't match "SideClick Dev".
+if [[ "$IDENTITY" =~ ^[0-9A-Fa-f]{40}$ ]]; then PATTERN="$(tr a-f A-F <<<"$IDENTITY")"; else PATTERN="\"$IDENTITY\""; fi
 if [[ "$IDENTITY" == "-" ]]; then
     codesign --force --sign - "$APP"
-elif grep -qF "\"$IDENTITY\"" <<<"$IDENTITIES"; then
+elif grep -qF "$PATTERN" <<<"$IDENTITIES"; then
     codesign --force --sign "$IDENTITY" "$APP"
 else
     echo "warning: signing identity '$IDENTITY' not found; using ad-hoc signature." >&2

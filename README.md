@@ -25,7 +25,8 @@ asks for it on first launch. Two more are needed only for the battery level (see
 **Bluetooth**, asked for when a Bluetooth Low Energy mouse connects, and **Input Monitoring**,
 offered as a button when a WhiteShark Maximus receiver is connected.
 
-> The app is ad-hoc signed and not notarized, so Gatekeeper blocks it on first launch. Either:
+> The app is signed with a self-signed certificate and not notarized, so Gatekeeper blocks it
+> on first launch. Either:
 >
 > - open **System Settings → Privacy & Security** and click **Open Anyway** next to the
 >   SideClick message (macOS 15+; on macOS 14 right-click the app and choose **Open**), or
@@ -35,8 +36,9 @@ offered as a button when a WhiteShark Maximus receiver is connected.
 >   xattr -dr com.apple.quarantine /Applications/SideClick.app
 >   ```
 >
-> Because the signature is ad-hoc, macOS also asks you to re-grant Accessibility after you
-> replace the app with a newer version.
+> Every release is signed with the same certificate, so the permissions you grant are kept
+> when you replace the app with a newer version. Versions up to 0.3.0 were ad-hoc signed:
+> after updating from one of them, grant the permissions once more.
 
 ### Upgrading from XiaomiMouseFix
 
@@ -93,7 +95,8 @@ pkill -x SideClick; ditto ~/Library/Caches/SideClick/SideClick.app ~/Application
 open ~/Applications/SideClick.app
 ```
 
-To produce a drag-to-Applications DMG (ad-hoc signed) next to the app:
+To produce a drag-to-Applications DMG next to the app, signed with the release certificate
+(see [Release signing](#release-signing)):
 
 ```bash
 scripts/make-dmg.sh
@@ -125,6 +128,33 @@ Without the certificate the build is ad-hoc signed. After each build, remove the
 **System Settings → Privacy & Security → Accessibility** and approve it again. Quit the app
 (from its menu) before removing it from the Accessibility list, otherwise its event taps can
 briefly stall scrolling and the side buttons.
+
+## Release signing
+
+Only needed to publish a release. `scripts/make-dmg.sh` signs with a self-signed certificate
+named `SideClick`, pinned by its SHA-1 in `RELEASE_CERT_SHA1`, and stops if it is missing.
+macOS ties the permissions users grant to this certificate's hash, so every release must be
+signed with the same one: a new certificate, even with the same name, makes every user grant
+the permissions again. The pinned hash makes the script refuse such a certificate. It does not
+get past Gatekeeper; that needs a paid Apple Developer ID and notarization.
+
+To create it:
+
+1. Open **Keychain Access → Certificate Assistant → Create a Certificate…**
+2. Name: `SideClick`, Identity Type: **Self-Signed Root**, Certificate Type: **Code Signing**,
+   and check **Let me override defaults**.
+3. Set **Validity Period** to `7300` days (20 years; the default is one year), keep the other
+   defaults, and click **Create**.
+4. Back it up: in Keychain Access → **My Certificates**, right-click `SideClick` →
+   **Export…**, save it as `.p12` with a password, and keep the file outside the repo. Without
+   this backup a lost Mac means a new certificate.
+5. Pin it: run `security find-identity -p codesigning`, copy the 40-character hash in front of
+   `"SideClick"` into `RELEASE_CERT_SHA1` in `scripts/make-dmg.sh`, and commit it. The hash is
+   not secret: it is in every shipped app's designated requirement (`codesign -d -r- SideClick.app`
+   shows it as `certificate leaf = H"…"`).
+
+On another Mac, import the `.p12` backup instead of creating a new certificate. To sign with a
+different identity (for a test build), set `SIGN_IDENTITY` to its name or SHA-1.
 
 ## Icons
 
